@@ -12,5 +12,5 @@ Build full dataset through paginated calls to get:
 
 ##Problems
 
- * Cannot sort by day because of dumb timecreate format
+ * Cannot sort by day using SoQL because of dumb timecreate format
  * Pulling all data by cycling through paginated data is resource intensive
