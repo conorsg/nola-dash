@@ -10,7 +10,7 @@ Use SoQL to transform raw data into:
 Build full dataset through paginated calls to get:
  * counts of crimes by type for each week for last 52 weeks for big heatmap
 
-##Problems
+###Problems
 
  * Cannot sort by day using SoQL because of dumb timecreate format
  * Pulling all data by cycling through paginated data is resource intensive
