@@ -5,10 +5,10 @@ Visualizations of data from [data.nola.gov](https://data.nola.gov/) made using [
 ###Notes
 
 Use SoQL to transform raw data into:
- * counts of crimes by ZIP (http://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=zip,typetext,count(typetext)&$group=typetext,zip)
+ * counts of crimes by ZIP (https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=zip,typetext,count(typetext)&$group=typetext,zip)
 
 Build full dataset through paginated calls to get:
- * counts of crimes by type each week for last 52 weeks for big heatmap
+ * counts of crimes by type for each week for last 52 weeks for big heatmap
 
 ##Problems
 
