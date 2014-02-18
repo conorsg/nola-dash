@@ -1,0 +1,41 @@
+@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,400italic);
+/*
+
+Styles on top of Bootstrap
+Written by Conor Gaffney, 2014
+
+   ________________  ______
+   / ____/ ____/ __ \/ ____/
+  / __/ / /   / / / / /     
+ / /___/ /___/ /_/ / /___   
+/_____/\____/_____/\____/
+
+*/
+
+body,
+h1,
+h2,
+h3,
+h4,
+h6,
+a,
+p {
+  font-family: 'Source Sans Pro', sans-serif;
+}
+ul {
+  list-style-type: none;
+}
+header {
+  background: #EEE;
+  padding: 20px;
+  border-bottom: 1px solid #DDD;
+}
+footer {
+  clear: both;
+  background: #EEE;
+  padding: 20px;
+  border-top: 1px solid #DDD;
+}
+footer li {
+  display: inline-block;
+}
