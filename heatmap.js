@@ -10,7 +10,6 @@ var data;
 var nest;
 
 
-
 // get the data
 d3.json(typesUrl, function(error, json){
 	crimeTypes = json;
