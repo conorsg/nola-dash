@@ -10,9 +10,11 @@ Use SoQL to transform raw data into:
 Build full dataset through paginated calls to get:
  * counts of crimes by type for each week for last 52 weeks for big heatmap
 
-Should heatmap be granular, like a grid, or continuous?
+Drag to select cells gives some basic info on selection (time period selected, types of crimes and totals for time period)
+Hover shows info for cell pointer is over
 
 ###Problems
 
  * Cannot sort by day using SoQL because of dumb timecreate format
  * Pulling all data by cycling through paginated data is resource intensive
+ * Should heatmap be granular, like a grid, or continuous?
