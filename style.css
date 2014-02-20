@@ -42,4 +42,5 @@ footer li {
 
 .graph-label {
   font-size: 10px;
+  cursor: pointer;
 }
