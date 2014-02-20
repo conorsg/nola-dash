@@ -39,3 +39,7 @@ footer {
 footer li {
   display: inline-block;
 }
+
+.graph-label {
+  font-size: 10px;
+}

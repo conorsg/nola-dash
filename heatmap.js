@@ -4,7 +4,7 @@
 
 var log = d3.select('#log');
 var url = 'https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=typetext,timecreate,type_';
-var typesUrl = "https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=type_&$group=type_";
+var typesUrl = "https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=type_,typetext&$group=typetext,type_";
 var crimeTypes;
 var data;
 var nest;
@@ -66,4 +66,28 @@ function makeChart() {
 	var svg = d3.select('#chart').append("svg")
 		.attr("width", width)
 		.attr("height", height);
+
+	var rowLabels = svg.append("g")
+		.attr("transform", "translate(200,100)")
+		.selectAll(".rowLabelg")
+		.data(crimeTypes)
+		.enter()
+		.append("text")
+		.text(function(d) { return d.typetext })
+		.style("text-anchor","end")
+		.attr("class", "graph-label")
+		.attr("x", 0)
+		.attr("y", function(d,i) { return (i+1) * cellSize });
+
+	var colLabels = svg.append("g")
+		.attr("transform", "translate(200,100)")
+		.selectAll(".colLabelg")
+		.data(nest)
+		.enter()
+		.append("text")
+		.text(function(d) { return d.key })
+		.attr("y", function(d,i) { return (i+1) * cellSize })
+		.attr("x", 0)
+		.attr("class", "graph-label")
+		.attr("transform", "rotate(-90)");
 }
