@@ -117,9 +117,9 @@ function makeChart() {
 		.attr("class", "graph-label")
 		.attr("transform", "rotate(-90)");
 
-	// var colorScale = d3.scale.quantile()
-	// 	.domain([0, crimeTypes.length])
-	// 	.range(colors);
+	var colorScale = d3.scale.ordinal()
+		.domain([0, crimeTypes.length])
+		.range(colorbrewer.RdBu[9]);
 
 	var heatMap = svg.append("g").attr("class", "cells")
 		.attr("transform", "translate(202,60)")
@@ -132,5 +132,5 @@ function makeChart() {
 		.attr("y", function(d,i) { return (crimeTypes.indexOf(d.crime)) * cellSize } )
 		.attr("height", cellSize)
 		.attr("width", cellSize)
-		// .attr("fill",);
+		.attr("fill", function(d) { return colorScale(d.count) });
 }
