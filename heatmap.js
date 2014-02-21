@@ -119,7 +119,7 @@ function makeChart() {
 
 	var colorScale = d3.scale.ordinal()
 		.domain([0, crimeTypes.length])
-		.range(colorbrewer.RdBu[9]);
+		.range(colorbrewer.YlOrBr[9]);
 
 	var heatMap = svg.append("g").attr("class", "cells")
 		.attr("transform", "translate(202,60)")
