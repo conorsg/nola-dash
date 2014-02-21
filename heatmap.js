@@ -8,6 +8,7 @@ var typesUrl = "https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$s
 var crimeTypes = [];
 var data;
 var nest;
+var cells = [];
 
 
 // get the data
@@ -36,6 +37,7 @@ d3.json(url, function(error, json){
 		} else {
 			log.html('<h2>Data retrieved</h2>')
 			transformData(data);
+			makeCells();
 			return false;
 		}
 	}
@@ -57,6 +59,20 @@ function transformData(data) {
 		.entries(data);
 	log.html('<h2>Data transformed</h2>');
 	return nest;
+}
+
+// create flatter data object for heatmap chart
+function makeCells(){
+	for(i in nest) {
+		for(c in nest[i].values){
+			var cell = {
+				date: nest[i].key,
+				crime: nest[i].values[c].key,
+				count: nest[i].values[c].values.length
+			}
+			cells.push(cell);
+		}
+	}
 }
 
 
@@ -97,15 +113,21 @@ function makeChart() {
 		.attr("class", "graph-label")
 		.attr("transform", "rotate(-90)");
 
+	// var colorScale = d3.scale.quantile()
+	// 	.domain([0, crimeTypes.length])
+	// 	.range(colors);
+
 	var heatMap = svg.append("g").attr("class", "cells")
 		.attr("transform", "translate(191,63)")
 		.selectAll(".cellg")
-		.data(function(d) { return d.values })
+		.data()
 		.enter()
 		.append("rect")
 		.attr("class","cell")
-		.attr("x", 12)
-		.attr("y", function(d) { return crimeTypes.indexOf(d.key) * cellSize })
+		.attr("x", function(d,i) { return (i+1) * cellSize } )
+		.attr("y", function(d,i) { return (i+1) * cellSize } )
 		.attr("height", cellSize)
-		.attr("width", cellSize);
+		.attr("width", cellSize)
+		.attr("stroke", "#eee");
+		// .attr("fill",);
 }
