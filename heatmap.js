@@ -6,6 +6,7 @@ var log = d3.select('#log');
 var url = 'https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=typetext,timecreate,type_';
 var typesUrl = "https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=typetext&$group=typetext";
 var crimeTypes = [];
+var days = [];
 var data;
 var nest;
 var cells = [];
@@ -38,6 +39,8 @@ d3.json(url, function(error, json){
 			log.html('<h2>Data retrieved</h2>')
 			transformData(data);
 			makeCells();
+			// create array object of days
+			for(i in nest) { days.push(nest[i].key) }
 			return false;
 		}
 	}
@@ -52,6 +55,7 @@ function transformData(data) {
 	data.forEach(function(d){
 		d.timecreate = d.timecreate.split(" ")[0]
 	});
+
 	// aggregate the data by day and then violation type
 	nest = d3.nest()
 		.key(function(d){ return d.timecreate; })
@@ -78,7 +82,7 @@ function makeCells(){
 
 // make the chart
 function makeChart() {
-	var cellSize = 12;
+	var cellSize = 10;
 	var rowNum = crimeTypes.length;
 	var colNum = 52; //weeks in the year
 	var width = cellSize * colNum;
@@ -118,16 +122,15 @@ function makeChart() {
 	// 	.range(colors);
 
 	var heatMap = svg.append("g").attr("class", "cells")
-		.attr("transform", "translate(191,63)")
+		.attr("transform", "translate(202,60)")
 		.selectAll(".cellg")
-		.data()
+		.data(cells)
 		.enter()
 		.append("rect")
 		.attr("class","cell")
-		.attr("x", function(d,i) { return (i+1) * cellSize } )
-		.attr("y", function(d,i) { return (i+1) * cellSize } )
+		.attr("x", function(d) { return (days.indexOf(d.date)) * cellSize } )
+		.attr("y", function(d,i) { return (crimeTypes.indexOf(d.crime)) * cellSize } )
 		.attr("height", cellSize)
 		.attr("width", cellSize)
-		.attr("stroke", "#eee");
 		// .attr("fill",);
 }
