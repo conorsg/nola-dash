@@ -10,6 +10,7 @@ var days = [];
 var data;
 var nest;
 var cells = [];
+var homicides = [];
 
 
 // get the data
@@ -43,6 +44,7 @@ d3.json(url, function(error, json){
 			// create array object of days
 			for(i in nest) { days.push(nest[i].key) }
 			makeChart();
+			makeTopStats();
 			return false;
 		}
 	}
@@ -64,7 +66,13 @@ function transformData(data) {
 		.key(function(d){ return d.typetext; })
 		.entries(data);
 	log.html('<p>> Data transformed</p>');
-	return nest;
+
+	// count homicides
+	for(i in data) {
+		if(data[i].type_ === "30S") {
+			homicides.push(data[i])
+		}
+	}
 }
 
 // create flatter data object for heatmap chart
@@ -178,4 +186,11 @@ function makeChart() {
 			d3.select("#tooltip").classed("hidden", true);
 		});
 	log.html('<p>> Chart complete</p>');
+}
+
+// make top stats charts
+
+function makeTopStats() {
+	// write homicides
+	d3.select(".homicides").html('<h2>Homicides:</h2><h1 class="count">' + homicides.length + '</h1>');
 }

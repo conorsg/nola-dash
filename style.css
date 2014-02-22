@@ -85,3 +85,12 @@ rect:hover {
   font-size: 12px;
   line-height: 20px;
 }
+
+.homicides {
+  text-align: center;
+}
+.homicides .count {
+  font-weight: bold;
+  font-size: 108px;
+  margin-top: 0;
+}
