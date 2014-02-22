@@ -95,7 +95,8 @@ function makeChart() {
 
 	var rowLabels = svg.append("g")
 		.attr("transform", "translate(200,60)")
-		.selectAll(".rowLabelg")
+		.attr("class", "rowLabels")
+		.selectAll(".rowLabel")
 		.data(crimeTypes)
 		.enter()
 		.append("text")
@@ -107,7 +108,8 @@ function makeChart() {
 
 	var colLabels = svg.append("g")
 		.attr("transform", "translate(200,60)")
-		.selectAll(".colLabelg")
+		.attr("class", "colLabels")
+		.selectAll(".colLabel")
 		.data(nest)
 		.enter()
 		.append("text")
@@ -117,13 +119,41 @@ function makeChart() {
 		.attr("class", "graph-label")
 		.attr("transform", "rotate(-90)");
 
+	var vertGrid = svg.append("g")
+		.attr("transform", "translate(200,60)")
+		.attr("class", "vert-grid")
+		.selectAll(".vert-grid")
+		.data(days)
+		.enter()
+		.append("line")
+		.attr("x1", function(d,i) { return (i+1) * cellSize + 2 })
+		.attr("x2", function(d,i) { return (i+1) * cellSize + 2 })
+		.attr("y1", 0)
+		.attr("y2", height)
+		.attr("stroke", "#eee");
+
+	var horzGrid = svg.append("g")
+		.attr("transform", "translate(200,60)")
+		.attr("class", "horz-grid")
+		.selectAll(".horz-grid")
+		.data(crimeTypes)
+		.enter()
+		.append("line")
+		.attr("y1", function(d,i) { return (i+1) * cellSize + 2 })
+		.attr("y2", function(d,i) { return (i+1) * cellSize + 2 })
+		.attr("x1", 0)
+		.attr("x2", width)
+		.attr("stroke", "#eee");
+
+
 	var colorScale = d3.scale.ordinal()
 		.domain([0, crimeTypes.length])
-		.range(colorbrewer.YlOrBr[9]);
+		.range(colorbrewer.YlOrRd[9]);
 
-	var heatMap = svg.append("g").attr("class", "cells")
+	var heatMap = svg.append("g")
+		.attr("class", "cells")
 		.attr("transform", "translate(202,60)")
-		.selectAll(".cellg")
+		.selectAll(".cell")
 		.data(cells)
 		.enter()
 		.append("rect")
@@ -132,5 +162,6 @@ function makeChart() {
 		.attr("y", function(d,i) { return (crimeTypes.indexOf(d.crime)) * cellSize } )
 		.attr("height", cellSize)
 		.attr("width", cellSize)
+		.attr("stroke", "#eee")
 		.attr("fill", function(d) { return colorScale(d.count) });
 }
