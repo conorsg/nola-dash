@@ -29,18 +29,20 @@ d3.json(url, function(error, json){
 	function getPagedData(json) {
 		if(json.length == 1000) {
 			offset = offset + 1000;
-			log.html('<h2>Fetching data...</h2>')
+			log.html('<p>> Fetching data...</p>')
 
 			d3.json(url + '&$offset=' + offset, function(error, json){
 				data = data.concat(json);
 				getPagedData(json);
 			});
 		} else {
-			log.html('<h2>Data retrieved</h2>')
+			log.html('<p>> Data retrieved</p>')
+			// call all functions to transform data and make chart
 			transformData(data);
 			makeCells();
 			// create array object of days
 			for(i in nest) { days.push(nest[i].key) }
+			makeChart();
 			return false;
 		}
 	}
@@ -49,7 +51,7 @@ d3.json(url, function(error, json){
 
 // transform the data
 function transformData(data) {
-	log.html('<h2>Analyzing the data...</h2>');
+	log.html('<p>> Analyzing the data...</p>');
 
 	// get rid of the hours, minutes, seconds
 	data.forEach(function(d){
@@ -61,7 +63,7 @@ function transformData(data) {
 		.key(function(d){ return d.timecreate; })
 		.key(function(d){ return d.typetext; })
 		.entries(data);
-	log.html('<h2>Data transformed</h2>');
+	log.html('<p>> Data transformed</p>');
 	return nest;
 }
 
@@ -108,7 +110,7 @@ function makeChart() {
 		.attr("y", function(d,i) { return (i+1) * cellSize });
 
 	var colLabels = svg.append("g")
-		.attr("transform", "translate(200,60)")
+		.attr("transform", "translate(198,60)")
 		.attr("class", "colLabels")
 		.selectAll(".colLabel")
 		.data(nest)
@@ -165,7 +167,6 @@ function makeChart() {
 		.attr("stroke", "#eee")
 		.attr("fill", function(d) { return colorScale(d.count) })
 		.on("mouseover", function(d) {
-			// tooltip
 			d3.select("#tooltip")
 				.style("left", (d3.event.pageX+10) + "px")
                 .style("top", (d3.event.pageY-10) + "px")
@@ -176,4 +177,5 @@ function makeChart() {
 		.on("mouseout", function() {
 			d3.select("#tooltip").classed("hidden", true);
 		});
+	log.html('<p>> Chart complete</p>');
 }

@@ -1,4 +1,5 @@
 @import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,400italic);
+@import url(http://fonts.googleapis.com/css?family=Source+Code+Pro);
 /*
 
 Styles on top of Bootstrap
@@ -38,6 +39,12 @@ footer {
 }
 footer li {
   display: inline-block;
+}
+
+#log p {
+  font-family: 'Source Code Pro', monospace;
+  color: #b12b0f;
+  margin-left: 40px;
 }
 
 .graph-label {
