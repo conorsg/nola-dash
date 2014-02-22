@@ -82,11 +82,11 @@ function makeCells(){
 
 // make the chart
 function makeChart() {
-	var cellSize = 10;
+	var cellSize = 12;
 	var rowNum = crimeTypes.length;
-	var colNum = 52; //weeks in the year
-	var width = cellSize * colNum;
-	var height = cellSize * rowNum + 60;
+	var colNum = days.length
+	var width = (cellSize) * colNum + 200;
+	var height = cellSize * rowNum + 66;
 
 	var svg = d3.select('#chart').append("svg")
 		.attr("width", width)
@@ -126,8 +126,8 @@ function makeChart() {
 		.data(days)
 		.enter()
 		.append("line")
-		.attr("x1", function(d,i) { return (i+1) * cellSize + 2 })
-		.attr("x2", function(d,i) { return (i+1) * cellSize + 2 })
+		.attr("x1", function(d,i) { return (i) * cellSize + 2 })
+		.attr("x2", function(d,i) { return (i) * cellSize + 2 })
 		.attr("y1", 0)
 		.attr("y2", height)
 		.attr("stroke", "#eee");
@@ -139,15 +139,15 @@ function makeChart() {
 		.data(crimeTypes)
 		.enter()
 		.append("line")
-		.attr("y1", function(d,i) { return (i+1) * cellSize + 2 })
-		.attr("y2", function(d,i) { return (i+1) * cellSize + 2 })
+		.attr("y1", function(d,i) { return (i) * cellSize + 2 })
+		.attr("y2", function(d,i) { return (i) * cellSize + 2 })
 		.attr("x1", 0)
 		.attr("x2", width)
 		.attr("stroke", "#eee");
 
 
 	var colorScale = d3.scale.ordinal()
-		.domain([0, crimeTypes.length])
+		.domain([0, 50])
 		.range(colorbrewer.YlOrRd[9]);
 
 	var heatMap = svg.append("g")
@@ -159,9 +159,21 @@ function makeChart() {
 		.append("rect")
 		.attr("class","cell")
 		.attr("x", function(d) { return (days.indexOf(d.date)) * cellSize } )
-		.attr("y", function(d,i) { return (crimeTypes.indexOf(d.crime)) * cellSize } )
+		.attr("y", function(d,i) { return (crimeTypes.indexOf(d.crime)) * cellSize + 2 } )
 		.attr("height", cellSize)
 		.attr("width", cellSize)
 		.attr("stroke", "#eee")
-		.attr("fill", function(d) { return colorScale(d.count) });
+		.attr("fill", function(d) { return colorScale(d.count) })
+		.on("mouseover", function(d) {
+			// tooltip
+			d3.select("#tooltip")
+				.style("left", (d3.event.pageX+10) + "px")
+                .style("top", (d3.event.pageY-10) + "px")
+                .select("#value")
+                .html("<p>Date: " + d.date + "</p><p>Crime: " + d.crime + "</p>Count: " + d.count + "</p>");
+            d3.select("#tooltip").classed("hidden", false);
+		})
+		.on("mouseout", function() {
+			d3.select("#tooltip").classed("hidden", true);
+		});
 }
