@@ -87,6 +87,7 @@ function makeChart() {
 	var colNum = days.length
 	var width = (cellSize) * colNum + 200;
 	var height = cellSize * rowNum + 66;
+	var colors = ["#fff", "#fef6f4", "#fde8e4", "#fbdbd5", "#facec5", "#f9c1b5", "#f7b4a6", "#f6a796", "#f49a86", "#f38c77", "#f27f67", "#f07258", "#ef6548", "#ee5838", "#ec4b29", "#eb3e19", "#e03714", "#d03312", "#c02f11", "#b12b0f", "#a1280e", "#91240d", "#82200b", "#721c0a", "#631809", "531407", "#431106", "#340d05", "#240903", "#140502", "#050100", "#000"]
 
 	var svg = d3.select('#chart').append("svg")
 		.attr("width", width)
@@ -145,10 +146,9 @@ function makeChart() {
 		.attr("x2", width)
 		.attr("stroke", "#eee");
 
-
-	var colorScale = d3.scale.ordinal()
+	var colorScale = d3.scale.quantize()
 		.domain([0, 50])
-		.range(colorbrewer.YlOrRd[9]);
+		.range(colors);
 
 	var heatMap = svg.append("g")
 		.attr("class", "cells")
