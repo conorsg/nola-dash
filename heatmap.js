@@ -1,10 +1,12 @@
 // Written by Conor Gaffney, 2014
 
-// var zipUrl = "https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=zip,typetext,count(typetext)&$group=typetext,zip";
+
 
 var log = d3.select('#log');
 var url = 'https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=typetext,timecreate,type_';
 var typesUrl = "https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=typetext&$group=typetext";
+var zipUrl = "https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=zip,count(zip)&$group=zip";
+var zipCrimes = [];
 var crimeTypes = [];
 var days = [];
 var data;
@@ -16,7 +18,13 @@ var homicides = [];
 // get the data
 d3.json(typesUrl, function(error, json){
 	json.forEach(function(d){
-		crimeTypes = crimeTypes.concat(d.typetext);
+		crimeTypes.push(d.typetext);
+	});
+});
+
+d3.json(zipUrl, function(error, json){
+	json.forEach(function(d){
+		zipCrimes.push(d);
 	});
 });
 
@@ -38,13 +46,14 @@ d3.json(url, function(error, json){
 			});
 		} else {
 			log.html('<p>> Data retrieved</p>')
-			// call all functions to transform data and make chart
+			// call all functions to transform data and make chart after all data has been retrieved
 			transformData(data);
 			makeCells();
 			// create array object of days
 			for(i in nest) { days.push(nest[i].key) }
 			makeChart();
 			makeTopStats();
+			makeDonut();
 			return false;
 		}
 	}
@@ -72,6 +81,15 @@ function transformData(data) {
 		if(data[i].type_ === "30S") {
 			homicides.push(data[i])
 		}
+	}
+
+	// turn zipCrimes into numbers
+	for(i in zipCrimes) {
+		if(zipCrimes[i].zip == null || zipCrimes[i].count_zip == null) {
+			zipCrimes.splice(i,1);
+		} else{}
+		zipCrimes[i].count_zip = Number(zipCrimes[i].count_zip);
+		zipCrimes[i].zip = Number(zipCrimes[i].zip);
 	}
 }
 
@@ -193,4 +211,34 @@ function makeChart() {
 function makeTopStats() {
 	// write homicides
 	d3.select(".homicides").html('<h2>Homicides:</h2><h1 class="count">' + homicides.length + '</h1>');
+}
+
+function makeDonut() {
+
+	var width = 300;
+	var height = 300;
+	var radius = Math.min(width, height) / 2;
+
+	var svg = d3.select(".zips").append("svg")
+		.attr("width", width)
+		.attr("height", height)
+		.append("g")
+    	.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+	var arc = d3.svg.arc()
+		.outerRadius(radius)
+		.innerRadius(radius - 70);
+
+	var pie = d3.layout.pie()
+		.sort(null)
+		.value(function(d){ return d.count_zip })
+
+	var g = svg.selectAll(".arc")
+      	.data(pie(zipCrimes))
+    	.enter().append("g")
+      	.attr("class", "arc")
+      	.append("path")
+      	.attr("d", arc)
+      	.attr("stroke", "eee")
+      	.attr("fill", "#000");
 }

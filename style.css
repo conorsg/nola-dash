@@ -94,3 +94,7 @@ rect:hover {
   font-size: 108px;
   margin-top: 0;
 }
+
+.zips path {
+  stroke: #ddd;
+}
