@@ -107,6 +107,9 @@ function makeCells(){
 	}
 }
 
+// create global color scale
+var colors = ["#fff", "#fef6f4", "#fde8e4", "#fbdbd5", "#facec5", "#f9c1b5", "#f7b4a6", "#f6a796", "#f49a86", "#f38c77", "#f27f67", "#f07258", "#ef6548", "#ee5838", "#ec4b29", "#eb3e19", "#e03714", "#d03312", "#c02f11", "#b12b0f", "#a1280e", "#91240d", "#82200b", "#721c0a", "#631809", "531407", "#431106", "#340d05", "#240903", "#140502", "#050100", "#000"];
+
 
 // make the chart
 function makeChart() {
@@ -115,7 +118,6 @@ function makeChart() {
 	var colNum = days.length
 	var width = (cellSize) * colNum + 200;
 	var height = cellSize * rowNum + 66;
-	var colors = ["#fff", "#fef6f4", "#fde8e4", "#fbdbd5", "#facec5", "#f9c1b5", "#f7b4a6", "#f6a796", "#f49a86", "#f38c77", "#f27f67", "#f07258", "#ef6548", "#ee5838", "#ec4b29", "#eb3e19", "#e03714", "#d03312", "#c02f11", "#b12b0f", "#a1280e", "#91240d", "#82200b", "#721c0a", "#631809", "531407", "#431106", "#340d05", "#240903", "#140502", "#050100", "#000"]
 
 	var svg = d3.select('#heat-grid').append("svg")
 		.attr("width", width)
@@ -219,6 +221,10 @@ function makeDonut() {
 	var height = 300;
 	var radius = Math.min(width, height) / 2;
 
+	var colorScale = d3.scale.quantize()
+		.domain([0, d3.max(zipCrimes, function(d) { return d.count_zip })])
+		.range(colors);
+
 	var svg = d3.select(".zips").append("svg")
 		.attr("width", width)
 		.attr("height", height)
@@ -240,5 +246,6 @@ function makeDonut() {
       	.append("path")
       	.attr("d", arc)
       	.attr("stroke", "eee")
-      	.attr("fill", "#000");
+      	.data(zipCrimes)
+      	.attr("fill", function(d) {  return colorScale(d.count_zip) })
 }

@@ -56,7 +56,7 @@ section {
   cursor: pointer;
 }
 
-rect:hover {
+rect:hover, {
   stroke: steelblue;
   cursor: pointer;
 }
