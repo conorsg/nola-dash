@@ -22,15 +22,22 @@
   </header>
 
   <div class="container main" role="main">
-    <h2>All crimes reported to NOPD, 2014:</h2>
-    <div id="log">
-    <p>> Initializing...</p>
-    </div>
-    <div id="chart">
+    <section id="heat-grid">
+      <h2>All crimes reported to NOPD, 2014:</h2>
+      <div id="log">
+        <p>> Initializing...</p>
+      </div>
       <div id="tooltip" class="hidden">
         <p><span id="value"></p>
       </div>
-    </div>
+    </section>
+
+    <section id="top-stats">
+      <div class="col-sm-4">
+        <h2>Homicides:</h2>
+          <h1 class="count"></h1>
+      </div>
+    </section>
     
   </div>
 
