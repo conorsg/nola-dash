@@ -2,6 +2,8 @@
 
 Visualizations of data from [data.nola.gov](https://data.nola.gov/) made using [d3.js](http://d3js.org/)
 
+See it at [s3.conorgaffney.com/what-dat](http://s3.conorgaffney.com/what-dat/)
+
 ###Notes
 
 Use SoQL to transform raw data into:
@@ -11,9 +13,8 @@ Build full dataset through paginated calls to get:
  * counts of crimes by type for each week for last 52 weeks for big heatmap
 
 Drag to select cells gives some basic info on selection (time period selected, types of crimes and totals for time period)
-Hover shows info for cell pointer is over
 
-###Problems
+###Issues
 
  * Cannot sort by day using SoQL because of dumb timecreate format
  * Pulling all data by cycling through paginated data is resource intensive
