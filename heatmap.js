@@ -237,15 +237,22 @@ function makeDonut() {
 
 	var pie = d3.layout.pie()
 		.sort(null)
-		.value(function(d){ return d.count_zip })
+		.value(function(d){ return d.count_zip });
 
 	var g = svg.selectAll(".arc")
       	.data(pie(zipCrimes))
-    	.enter().append("g")
+    	.enter()
+    	.append("g")
       	.attr("class", "arc")
       	.append("path")
       	.attr("d", arc)
       	.attr("stroke", "eee")
       	.data(zipCrimes)
-      	.attr("fill", function(d) {  return colorScale(d.count_zip) })
+      	.attr("fill", function(d) {  return colorScale(d.count_zip) });
+
+	g.append("text")
+		.attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+		.attr("dy", ".35em")
+		.style("text-anchor", "middle")
+		.text(function(d) { return d.zip; });
 }
