@@ -207,7 +207,7 @@ function makeChart() {
 
 function makeTopStats() {
 	// write homicides
-	d3.select(".homicides").html('<h2>Homicides:</h2><h1 class="count">' + homicides.length + '</h1>');
+	d3.select(".homicides").html('<h2>Homicides:</h2><h1 class="count">' + homicides.length + '</h1><h3 class="sub-title">Population: 369,250');
 }
 
 function makeDonut() {
