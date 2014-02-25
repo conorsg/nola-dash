@@ -2,6 +2,7 @@
 
 
 var log = d3.select('#log');
+var offset = 0;
 var url = 'https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=typetext,timecreate,type_';
 var typesUrl = "https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=typetext&$group=typetext";
 var zipUrl = "https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=zip,count(zip)&$group=zip";
@@ -14,6 +15,31 @@ var cells = [];
 var homicides = [];
 var colors = ["#fff", "#fef6f4", "#fde8e4", "#fbdbd5", "#facec5", "#f9c1b5", "#f7b4a6", "#f6a796", "#f49a86", "#f38c77", "#f27f67", "#f07258", "#ef6548", "#ee5838", "#ec4b29", "#eb3e19", "#e03714", "#d03312", "#c02f11", "#b12b0f", "#a1280e", "#91240d", "#82200b", "#721c0a", "#631809", "531407", "#431106", "#340d05", "#240903", "#140502", "#050100", "#000"];
 
+
+function drawAll() {
+	transformData(data);
+	makeCells();
+	for(i in nest) { days.push(nest[i].key) }
+	makeChart();
+	makeTopStats();
+	makeDonut();
+}
+
+function getPagedData(json) {
+	if(json.length == 1000) {
+		offset = offset + 1000;
+		log.html('<p>> Fetching data...</p>')
+
+		d3.json(url + '&$offset=' + offset, function(error, json){
+			data = data.concat(json);
+			getPagedData(json);
+		});
+	} else {;
+		log.html('<p>> Data retrieved</p>');
+		offset = 0;
+		return false;
+	}
+}
 
 // get the data
 d3.json(typesUrl, function(error, json){
@@ -30,30 +56,7 @@ d3.json(zipUrl, function(error, json){
 
 d3.json(url, function(error, json){
 	data = json;
-
-	var offset = 0;
 	getPagedData(json);
-
-	function getPagedData(json) {
-		if(json.length == 1000) {
-			offset = offset + 1000;
-			log.html('<p>> Fetching data...</p>')
-
-			d3.json(url + '&$offset=' + offset, function(error, json){
-				data = data.concat(json);
-				getPagedData(json);
-			});
-		} else {
-			log.html('<p>> Data retrieved</p>');
-			transformData(data);
-			makeCells();
-			for(i in nest) { days.push(nest[i].key) }
-			makeChart();
-			makeTopStats();
-			makeDonut();
-			return false;
-		}
-	}
 });
 
 // transform the data
