@@ -31,10 +31,9 @@ d3.json(zipUrl, function(error, json){
 d3.json(url, function(error, json){
 	data = json;
 
-	// deal with paginated data
 	var offset = 0;
 	getPagedData(json);
-	
+
 	function getPagedData(json) {
 		if(json.length == 1000) {
 			offset = offset + 1000;
@@ -45,11 +44,9 @@ d3.json(url, function(error, json){
 				getPagedData(json);
 			});
 		} else {
-			log.html('<p>> Data retrieved</p>')
-			// call all functions to transform data and make chart after all data has been retrieved
+			log.html('<p>> Data retrieved</p>');
 			transformData(data);
 			makeCells();
-			// create array object of days
 			for(i in nest) { days.push(nest[i].key) }
 			makeChart();
 			makeTopStats();
