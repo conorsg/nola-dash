@@ -16,7 +16,7 @@ Drag to select cells gives some basic info on selection (time period selected, t
 Sorting function on cells, by cluster of high values?
 How to group dates once we get more days in the year?
 
-	####Other charts
+####Other charts
 	 * Homicide count
 	 * Donut chart showing proportion of crimes by ZIP, click on segment to bring up polygon of ZIP on small map
 	 * Histograms showing cumulative count of specific crimes (homicide, rape, shooting) for this year AND this time last year
