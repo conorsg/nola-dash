@@ -1,7 +1,8 @@
 // Written by Conor Gaffney, 2014
+// This is a mess
 
-
-var log = d3.select('#log');
+var chartLog = d3.select('#heat-grid .log');
+var barLog = d3.select('#hist-stats .log');
 var offset = 0;
 var url = 'https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=typetext,timecreate,type_';
 var typesUrl = "https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=typetext&$group=typetext";
@@ -16,32 +17,6 @@ var cells = [];
 var homicides = [];
 var colors = ["#fff", "#fef6f4", "#fde8e4", "#fbdbd5", "#facec5", "#f9c1b5", "#f7b4a6", "#f6a796", "#f49a86", "#f38c77", "#f27f67", "#f07258", "#ef6548", "#ee5838", "#ec4b29", "#eb3e19", "#e03714", "#d03312", "#c02f11", "#b12b0f", "#a1280e", "#91240d", "#82200b", "#721c0a", "#631809", "531407", "#431106", "#340d05", "#240903", "#140502", "#050100", "#000"];
 
-
-function drawAll() {
-	transformData(data);
-	makeCells();
-	for(i in nest) { days.push(nest[i].key) }
-	makeChart();
-	makeTopStats();
-	makeDonut();
-}
-
-function getPagedData(json) {
-	if(json.length == 1000) {
-		offset = offset + 1000;
-		log.html('<p>> Fetching data...</p>')
-
-		d3.json(url + '&$offset=' + offset, function(error, json){
-			data = data.concat(json);
-			getPagedData(json);
-		});
-	} else {
-		log.html('<p>> Data retrieved</p>')
-		offset = 0;
-		drawAll();
-		return false;
-	}
-}
 
 // get the data
 d3.json(typesUrl, function(error, json){
@@ -58,12 +33,49 @@ d3.json(zipUrl, function(error, json){
 
 d3.json(url, function(error, json){
 	data = json;
-	getPagedData(json);
+	pageData(json, url, data, chartLog);
 });
+
+
+// retrieval and transform fns
+
+function pageData(json,url,arr,log) {
+	if(json.length == 1000) {
+		offset = offset + 1000; // use offest param to page through data 
+		// log.html('<p>> Fetching data...</p>');
+		
+		d3.json(url + '&$offset=' + offset, function(error,response){
+			arr.concat(response);
+			pageData(json);
+		});
+	} else {
+		// log.html('<p>> Data retrieved</p>');
+		offset = 0; // reset offset
+		return false;
+	}
+}
+
+// function getPagedData(json) {
+// 	if(json.length == 1000) {
+// 		offset = offset + 1000;
+// 		chartLog.html('<p>> Fetching data...</p>')
+
+// 		d3.json(url + '&$offset=' + offset, function(error, json){
+// 			data = data.concat(json);
+// 			getPagedData(json);
+// 		});
+// 	} else {
+// 		chartLog.html('<p>> Data retrieved</p>')
+// 		offset = 0;
+// 		drawAll();
+// 		return false;
+// 	}
+// }
+
 
 // transform the data
 function transformData(data) {
-	log.html('<p>> Analyzing the data...</p>');
+	chartLog.html('<p>> Analyzing the data...</p>');
 
 	// get rid of the hours, minutes, seconds
 	data.forEach(function(d){
@@ -75,7 +87,7 @@ function transformData(data) {
 		.key(function(d){ return d.timecreate; })
 		.key(function(d){ return d.typetext; })
 		.entries(data);
-	log.html('<p>> Data transformed</p>');
+	chartLog.html('<p>> Data transformed</p>');
 
 	// count homicides
 	for(i in data) {
@@ -106,6 +118,15 @@ function makeCells(){
 			cells.push(cell);
 		}
 	}
+}
+
+function drawAll() {
+	transformData(data);
+	makeCells();
+	for(i in nest) { days.push(nest[i].key) }
+	makeChart();
+	makeTopStats();
+	makeDonut();
 }
 
 // make the chart
@@ -202,18 +223,16 @@ function makeChart() {
 		.on("mouseout", function() {
 			d3.select("#tooltip").classed("hidden", true);
 		});
-	log.html('<p>> Chart complete</p>');
+	chartLog.html('<p>> Chart complete</p>');
 }
 
 // make top stats charts
 
 function makeTopStats() {
-	// write homicides
 	d3.select(".homicides").html('<h2>Homicides:</h2><h1 class="count">' + homicides.length + '</h1><h3 class="sub-title">Population: 369,250');
 }
 
 function makeDonut() {
-
 	var width = 300;
 	var height = 300;
 	var radius = Math.min(width, height) / 2;
