@@ -37,6 +37,7 @@ function getPagedData(json) {
 	} else {
 		log.html('<p>> Data retrieved</p>')
 		offset = 0;
+		drawAll();
 		return false;
 	}
 }
