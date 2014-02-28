@@ -45,7 +45,7 @@ section {
   border-bottom: 1px solid #ddd;
 }
 
-#log p {
+.log p {
   font-family: 'Source Code Pro', monospace;
   color: #b12b0f;
   margin-left: 40px;
