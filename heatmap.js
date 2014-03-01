@@ -50,7 +50,7 @@ d3.json(url, function(error, json){
 			for(i in nest) { days.push(nest[i].key) }
 			makeChart();
 			makeTopStats();
-			makeDonut();
+			// makeDonut();
 			return false;
 		}
 	}
