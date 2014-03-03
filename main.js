@@ -8,47 +8,64 @@ var zipUrl = "https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$sel
 var zipCrimes = [];
 var crimeTypes = [];
 var days = [];
-var data = [];
+var chartData;
 var nest;
 var cells = [];
 var homicides = [];
 var colors = ["#fff", "#fef6f4", "#fde8e4", "#fbdbd5", "#facec5", "#f9c1b5", "#f7b4a6", "#f6a796", "#f49a86", "#f38c77", "#f27f67", "#f07258", "#ef6548", "#ee5838", "#ec4b29", "#eb3e19", "#e03714", "#d03312", "#c02f11", "#b12b0f", "#a1280e", "#91240d", "#82200b", "#721c0a", "#631809", "531407", "#431106", "#340d05", "#240903", "#140502", "#050100", "#000"];
 
 
+function drawAll() {
+	if(crimeTypes.done == true && zipCrimes.done == true && data.done == true) {
+		transformData(data);
+		makeCells();
+		for(i in nest) { days.push(nest[i].key) }
+		makeChart();
+		makeTopStats();
+		// makeDonut();
+	} else {
+		drawAll();
+	}
+}
+
 // get the data
 d3.json(typesUrl, function(error, json){
 	json.forEach(function(d){
 		crimeTypes.push(d.typetext);
 	});
+	return crimeTypes.done = true;
 });
 
 d3.json(zipUrl, function(error, json){
 	json.forEach(function(d){
 		zipCrimes.push(d);
 	});
+	return zipCrimes.done = true;
 });
 
 d3.json(url, function(error, json){
 	data = json;
+
+	var offset = 0;
 	pageData(json);
+	
 	function pageData(json) {
-		var offset = 0;
 		if(json.length == 1000) {
-			offset = offset + 1000; // use offest param to page through data 
-			chartLog.html('<p>> Fetching data...</p>');
-			
-			d3.json(url + '&$offset=' + offset, function(error,response){
-				data.concat(response);
-				pageData(response);
+			offset = offset + 1000;
+			chartLog.html('<p>> Fetching data...</p>')
+
+			d3.json(url + '&$offset=' + offset, function(error, json){
+				data = data.concat(json);
+				pageData(json);
 			});
 		} else {
 			chartLog.html('<p>> Data retrieved</p>');
-			offset = 0; // reset offset
+			data.done = true;
+			drawAll();
 			return false;
 		}
 	}
 });
-
 
 // transform the data
 function transformData(data) {
@@ -95,15 +112,6 @@ function makeCells(){
 			cells.push(cell);
 		}
 	}
-}
-
-function drawAll() {
-	transformData(data);
-	makeCells();
-	for(i in nest) { days.push(nest[i].key) }
-	makeChart();
-	makeTopStats();
-	makeDonut();
 }
 
 // make the chart
