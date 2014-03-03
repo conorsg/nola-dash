@@ -1,17 +1,14 @@
-// Written by Conor Gaffney, 2014
-// This is a mess
+// Conor Gaffney, 2014
 
 var chartLog = d3.select('#heat-grid .log');
 var barLog = d3.select('#hist-stats .log');
-var offset = 0;
 var url = 'https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=typetext,timecreate,type_';
 var typesUrl = "https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=typetext&$group=typetext";
 var zipUrl = "https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=zip,count(zip)&$group=zip";
 var zipCrimes = [];
 var crimeTypes = [];
 var days = [];
-var offset = 0;
-var data;
+var data = [];
 var nest;
 var cells = [];
 var homicides = [];
@@ -33,44 +30,24 @@ d3.json(zipUrl, function(error, json){
 
 d3.json(url, function(error, json){
 	data = json;
-	pageData(json, url, data, chartLog);
-});
-
-
-// retrieval and transform fns
-
-function pageData(json,url,arr,log) {
-	if(json.length == 1000) {
-		offset = offset + 1000; // use offest param to page through data 
-		// log.html('<p>> Fetching data...</p>');
-		
-		d3.json(url + '&$offset=' + offset, function(error,response){
-			arr.concat(response);
-			pageData(json);
-		});
-	} else {
-		// log.html('<p>> Data retrieved</p>');
-		offset = 0; // reset offset
-		return false;
+	pageData(json);
+	function pageData(json) {
+		var offset = 0;
+		if(json.length == 1000) {
+			offset = offset + 1000; // use offest param to page through data 
+			chartLog.html('<p>> Fetching data...</p>');
+			
+			d3.json(url + '&$offset=' + offset, function(error,response){
+				data.concat(response);
+				pageData(response);
+			});
+		} else {
+			chartLog.html('<p>> Data retrieved</p>');
+			offset = 0; // reset offset
+			return false;
+		}
 	}
-}
-
-// function getPagedData(json) {
-// 	if(json.length == 1000) {
-// 		offset = offset + 1000;
-// 		chartLog.html('<p>> Fetching data...</p>')
-
-// 		d3.json(url + '&$offset=' + offset, function(error, json){
-// 			data = data.concat(json);
-// 			getPagedData(json);
-// 		});
-// 	} else {
-// 		chartLog.html('<p>> Data retrieved</p>')
-// 		offset = 0;
-// 		drawAll();
-// 		return false;
-// 	}
-// }
+});
 
 
 // transform the data
