@@ -12,6 +12,10 @@ var chartData;
 var nest;
 var cells = [];
 var homicides = [];
+var propertyCrimeTypes = ["65", "65P", "56", "56D", "55", "52", "51", "62", "62C", "62R", "67S", "67A", "67F", "67", "67P"];
+var violentCrimeTypes = ["38", "38D", "34S", "35D", "35", "43B", "42", "43", "30S", "37", "37D", "64K", "64J", "64G", "64" ];
+var rapeType = ["42", "43"];
+var gunType = ["64G", "95G"];
 var colors = ["#fff", "#fef6f4", "#fde8e4", "#fbdbd5", "#facec5", "#f9c1b5", "#f7b4a6", "#f6a796", "#f49a86", "#f38c77", "#f27f67", "#f07258", "#ef6548", "#ee5838", "#ec4b29", "#eb3e19", "#e03714", "#d03312", "#c02f11", "#b12b0f", "#a1280e", "#91240d", "#82200b", "#721c0a", "#631809", "531407", "#431106", "#340d05", "#240903", "#140502", "#050100", "#000"];
 
 
@@ -66,6 +70,17 @@ d3.json(url, function(error, json){
 		}
 	}
 });
+
+function getComparativeData(crimes) {
+	var baseUrl = 'https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&type_=';
+	var baseThirteenUrl = 'https://data.nola.gov/resource/5fn8-vtui.json?disposition=RTF&type_';
+
+	for (i in crimes) {
+		d3.json(baseUrl + crimes[i], function(error,response) {
+			console.log(response.length);
+		});
+	}
+}
 
 // transform the data
 function transformData(data) {
