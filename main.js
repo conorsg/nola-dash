@@ -1,56 +1,67 @@
-// Written by Conor Gaffney, 2014
+// Conor Gaffney, 2014
 
-
-var log = d3.select('#log');
+var chartLog = d3.select('#heat-grid .log');
+var barLog = d3.select('#hist-stats .log');
 var url = 'https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=typetext,timecreate,type_';
 var typesUrl = "https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=typetext&$group=typetext";
 var zipUrl = "https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=zip,count(zip)&$group=zip";
 var zipCrimes = [];
 var crimeTypes = [];
 var days = [];
-var data;
+var chartData;
 var nest;
 var cells = [];
 var homicides = [];
 var colors = ["#fff", "#fef6f4", "#fde8e4", "#fbdbd5", "#facec5", "#f9c1b5", "#f7b4a6", "#f6a796", "#f49a86", "#f38c77", "#f27f67", "#f07258", "#ef6548", "#ee5838", "#ec4b29", "#eb3e19", "#e03714", "#d03312", "#c02f11", "#b12b0f", "#a1280e", "#91240d", "#82200b", "#721c0a", "#631809", "531407", "#431106", "#340d05", "#240903", "#140502", "#050100", "#000"];
 
 
+function drawAll() {
+	if(crimeTypes.done == true && zipCrimes.done == true && data.done == true) {
+		transformData(data);
+		makeCells();
+		for(i in nest) { days.push(nest[i].key) }
+		makeChart();
+		makeTopStats();
+		// makeDonut();
+	} else {
+		drawAll();
+	}
+}
+
 // get the data
 d3.json(typesUrl, function(error, json){
 	json.forEach(function(d){
 		crimeTypes.push(d.typetext);
 	});
+	return crimeTypes.done = true;
 });
 
 d3.json(zipUrl, function(error, json){
 	json.forEach(function(d){
 		zipCrimes.push(d);
 	});
+	return zipCrimes.done = true;
 });
 
 d3.json(url, function(error, json){
 	data = json;
 
 	var offset = 0;
-	getPagedData(json);
-
-	function getPagedData(json) {
+	pageData(json);
+	
+	function pageData(json) {
 		if(json.length == 1000) {
 			offset = offset + 1000;
-			log.html('<p>> Fetching data...</p>')
+			chartLog.html('<p>> Fetching data...</p>')
 
 			d3.json(url + '&$offset=' + offset, function(error, json){
 				data = data.concat(json);
-				getPagedData(json);
+				pageData(json);
 			});
 		} else {
-			log.html('<p>> Data retrieved</p>');
-			transformData(data);
-			makeCells();
-			for(i in nest) { days.push(nest[i].key) }
-			makeChart();
-			makeTopStats();
-			makeDonut();
+			chartLog.html('<p>> Data retrieved</p>');
+			data.done = true;
+			drawAll();
 			return false;
 		}
 	}
@@ -58,7 +69,7 @@ d3.json(url, function(error, json){
 
 // transform the data
 function transformData(data) {
-	log.html('<p>> Analyzing the data...</p>');
+	chartLog.html('<p>> Analyzing the data...</p>');
 
 	// get rid of the hours, minutes, seconds
 	data.forEach(function(d){
@@ -70,7 +81,7 @@ function transformData(data) {
 		.key(function(d){ return d.timecreate; })
 		.key(function(d){ return d.typetext; })
 		.entries(data);
-	log.html('<p>> Data transformed</p>');
+	chartLog.html('<p>> Data transformed</p>');
 
 	// count homicides
 	for(i in data) {
@@ -197,18 +208,16 @@ function makeChart() {
 		.on("mouseout", function() {
 			d3.select("#tooltip").classed("hidden", true);
 		});
-	log.html('<p>> Chart complete</p>');
+	chartLog.html('<p>> Chart complete</p>');
 }
 
 // make top stats charts
 
 function makeTopStats() {
-	// write homicides
 	d3.select(".homicides").html('<h2>Homicides:</h2><h1 class="count">' + homicides.length + '</h1><h3 class="sub-title">Population: 369,250');
 }
 
 function makeDonut() {
-
 	var width = 300;
 	var height = 300;
 	var radius = Math.min(width, height) / 2;
