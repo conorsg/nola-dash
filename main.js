@@ -48,7 +48,7 @@ d3.json(url, function(error, json){
 
 	var offset = 0;
 	pageData(json);
-	
+
 	function pageData(json) {
 		if(json.length == 1000) {
 			offset = offset + 1000;
@@ -241,15 +241,15 @@ function makeDonut() {
 		.value(function(d){ return d.count_zip });
 
 	var g = svg.selectAll(".arc")
-      	.data(pie(zipCrimes))
+		.data(pie(zipCrimes))
     	.enter()
     	.append("g")
-      	.attr("class", "arc")
-      	.append("path")
-      	.attr("d", arc)
-      	.attr("stroke", "eee")
-      	.data(zipCrimes)
-      	.attr("fill", function(d) {  return colorScale(d.count_zip) });
+		.attr("class", "arc")
+		.append("path")
+		.attr("d", arc)
+		.attr("stroke", "eee")
+		.data(zipCrimes)
+		.attr("fill", function(d) {  return colorScale(d.count_zip) });
 
 	g.append("text")
 		.attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
