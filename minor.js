@@ -24,7 +24,7 @@ d3.json(url, function(error,json) {
 	i = 1;
 
 	(function pageData(json) {
-		if(json.length === 1000) {
+		if(json.length == 1000) {
 			d3.json(url + '&$offset=' + (i*1000), function(error,json) {
 				data = data.concat(json);
 				i++;
@@ -42,7 +42,7 @@ d3.json(pastUrl, function(error,json) {
 	i = 1;
 
 	(function pageData(json) {
-		if(json.length === 1000) {
+		if(json.length == 1000) {
 			d3.json(pastUrl + '&$offset=' + (i*1000), function(error,json) {
 				pastData = pastData.concat(json);
 				i++;
@@ -54,7 +54,7 @@ d3.json(pastUrl, function(error,json) {
 	}) (json);	
 });	
 
-function transform(data,nest) {
+function transform(data) {
 	data.forEach(function(d){
 		d.timecreate = d.timecreate.split(" ")[0]
 	});
