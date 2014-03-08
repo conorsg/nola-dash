@@ -33,7 +33,7 @@ d3.json(url, function(error,json) {
 		} else {
 			data.done = true;
 		}
-	}) (json);	
+	}) (json);
 });
 
 // retrieve 2013 data
@@ -51,18 +51,14 @@ d3.json(pastUrl, function(error,json) {
 		} else {
 			pastData.done = true;
 		}
-	}) (json);	
-});	
+	}) (json);
+});
 
 function transform(data) {
 	data.forEach(function(d){
 		d.timecreate = d.timecreate.split(" ")[0]
 	});
-	
-	nest = d3.nest()
-		.key(function(d){ return d.timecreate; })
-		.key(function(d){ return d.typetext; })
-		.entries(data);
+
 }
 
 function makeCells(nest){
@@ -77,3 +73,20 @@ function makeCells(nest){
 		}
 	}
 }
+
+// make heatchart
+(function runChart() {
+	if(data.done === true && pastData.done === true) {
+		transform(data);
+		transform(pastData);
+
+		nest = d3.nest()
+			.key(function(d){ return d.timecreate; })
+			.key(function(d){ return d.typetext; })
+			.entries(data);
+
+		makeCells(nest);
+	} else {
+		runChart();
+	}	
+}) ();
