@@ -54,7 +54,7 @@ d3.json(pastUrl, function(error,json) {
 	}) (json);	
 });	
 
-function transform(data,nest) {
+function transform(data) {
 	data.forEach(function(d){
 		d.timecreate = d.timecreate.split(" ")[0]
 	});
