@@ -105,7 +105,7 @@ function getOldData() {
 // now we transform the data to be more manipulable and writeable for charts
 function transform() {
 	data.forEach(function(d){
-		d.timecreate = d.timecreate.split(" ")[0]
+		d.timecreate = new Date(d.timecreate.split(" ")[0]);
 	});
 	
 	nest = d3.nest()
@@ -120,7 +120,7 @@ function transform() {
 			.entries(data);
 
 	pastData.forEach(function(d){
-		d.timecreate = d.timecreate.split(" ")[0]
+		d.timecreate = new Date(d.timecreate.split(" ")[0]);
 	});
 	
 	pastNest = d3.nest()
@@ -131,6 +131,21 @@ function transform() {
 	pastTypeNest = d3.nest()
 					.key(function(d) { return d.type_ })
 					.entries(pastData);
+
+	pastNestDelim = pastNest.slice(0, days.length);
+
+	pastDataDelim = [];
+
+	for (i in pastNestDelim) {
+		for(l in pastNestDelim[i].values) {
+			for(j in pastNestDelim[i].values[l].values)
+				pastDataDelim.push(pastNestDelim[i].values[l].values[j]);
+		}
+	}
+
+	pastTypeNestDelim = d3.nest()
+						.key(function(d) { return d.type_ })
+						.entries(pastDataDelim);
 
 	// wait a little bit for d3 to make nest objects before calling next function, which requires them
 	setTimeout(function() {
@@ -161,7 +176,7 @@ function compareData() {
 	function countTypes(crimes) {
 		for(i in crimes.types) {
 			var crime = crimes.types[i];
-			crimes.old = crimes.old + getCount(crime, pastTypeNest);
+			crimes.old = crimes.old + getCount(crime, pastTypeNestDelim);
 			crimes.now = crimes.now + getCount(crime, typeNest);
 
 			function getCount(crime, year) {
