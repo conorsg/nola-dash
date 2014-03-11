@@ -4,6 +4,7 @@ var fns 		=	[
 						getNewData,
 						getOldData,
 						transform,
+						compareData,
 						makeCells
 					];
 var url 		= 	'https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=typetext,timecreate,type_';
@@ -34,6 +35,11 @@ var rapes 		= 	{
 					};
 var guns 		= 	{
 						types: ["64G", "95G"],
+						old: 0,
+						now: 0
+					};
+var homicides 	= 	{
+						types: ["30S"],
 						old: 0,
 						now: 0
 					};
@@ -132,6 +138,7 @@ function transform() {
 					.key(function(d) { return d.type_ })
 					.entries(pastData);
 
+	// this is a hacky way of getting data objects that compare to this time last year
 	pastNestDelim = pastNest.slice(0, days.length);
 
 	pastDataDelim = [];
@@ -153,25 +160,13 @@ function transform() {
 	}, 500);
 }
 
-function makeCells(){
-	for(i in nest) {
-		for(c in nest[i].values){
-			var cell = {
-				date: nest[i].key,
-				crime: nest[i].values[c].key,
-				count: nest[i].values[c].values.length
-			}
-			cells.push(cell);
-		}
-	}
-}
-
 // count specific kinds of crimes for 2014 and 2013
 function compareData() {
 	countTypes(propCrimes);
 	countTypes(viCrimes);
 	countTypes(rapes);
 	countTypes(guns);
+	countTypes(homicides);
 
 	function countTypes(crimes) {
 		for(i in crimes.types) {
@@ -189,5 +184,41 @@ function compareData() {
 				return count;
 			}
 		}
-	}	
+	}
+}
+
+function makeCells(){
+	for(i in nest) {
+		for(j in nest[i].values){
+			var cell = {
+				date: nest[i].key,
+				crime: nest[i].values[j].key,
+				count: nest[i].values[j].values.length
+			}
+			cells.push(cell);
+		}
+	}
+}
+
+//draw dem graphs!
+function drawBar() {
+	var height 		=	400;
+	var width 		= 	900;
+	var barWidth	=	150;
+	var heightScalar; // got to make this so bars don't go off the svg as year goes on
+	var data 		=	[propCrimes, viCrimes, rapes, guns, homicides]
+
+	var svg = d3.select("#hist-stats").append("svg")
+				.attr("height", height)
+				.attr("width", width);
+
+	var bars = svg.selectAll("rect")
+				.data(data)
+				.enter()
+				.append("rect")
+				.attr("class", "bar")
+				.attr("width", barWidth)
+				.attr("height", function(d) { return d.old })
+				.attr("x", function(d,i) { return i * barWidth })
+				.attr("y", 200); //need to make fluid
 }
