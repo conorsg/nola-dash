@@ -16,10 +16,30 @@ var data;
 var pastData;
 var nest;
 var pastNest;
+var homicides 	= 	[];
+var propCrimes 	= 	{
+						types: ["65", "65P", "56", "56D", "55", "52", "51", "62", "62C", "62R", "67S", "67A", "67F", "67", "67P"],
+						oldcount: 0,
+						newcount: 0
+					};
+var viCrimes 	= 	{
+						types: ["38", "38D", "34S", "35D", "35", "43B", "42", "43", "30S", "37", "37D", "64K", "64J", "64G", "64" ],
+						oldcount: 0,
+						newcount: 0 
+					};
+var rapes 		= 	{
+						types: ["42", "43"],
+						oldcount: 0,
+						newcount: 0
+					};
+var guns 		= 	{
+						types: ["64G", "95G"],
+						oldcount: 0,
+						newcount: 0
+					};
 var colors 		= 	[
 						"#fff", "#fef6f4", "#fde8e4", "#fbdbd5", "#facec5", "#f9c1b5", "#f7b4a6", "#f6a796", "#f49a86", "#f38c77", "#f27f67", "#f07258", "#ef6548", "#ee5838", "#ec4b29", "#eb3e19", "#e03714", "#d03312", "#c02f11", "#b12b0f", "#a1280e", "#91240d", "#82200b", "#721c0a", "#631809", "531407", "#431106", "#340d05", "#240903", "#140502", "#050100", "#000"
 					];
-
 queue(fns);
 
 // first we make a sequence of calls to get our data
