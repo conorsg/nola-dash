@@ -19,23 +19,23 @@ var pastNest;
 var homicides 	= 	[];
 var propCrimes 	= 	{
 						types: ["65", "65P", "56", "56D", "55", "52", "51", "62", "62C", "62R", "67S", "67A", "67F", "67", "67P"],
-						oldcount: 0,
-						newcount: 0
+						old: 0,
+						now: 0
 					};
 var viCrimes 	= 	{
 						types: ["38", "38D", "34S", "35D", "35", "43B", "42", "43", "30S", "37", "37D", "64K", "64J", "64G", "64" ],
-						oldcount: 0,
-						newcount: 0 
+						old: 0,
+						now: 0 
 					};
 var rapes 		= 	{
 						types: ["42", "43"],
-						oldcount: 0,
-						newcount: 0
+						old: 0,
+						now: 0
 					};
 var guns 		= 	{
 						types: ["64G", "95G"],
-						oldcount: 0,
-						newcount: 0
+						old: 0,
+						now: 0
 					};
 var colors 		= 	[
 						"#fff", "#fef6f4", "#fde8e4", "#fbdbd5", "#facec5", "#f9c1b5", "#f7b4a6", "#f6a796", "#f49a86", "#f38c77", "#f27f67", "#f07258", "#ef6548", "#ee5838", "#ec4b29", "#eb3e19", "#e03714", "#d03312", "#c02f11", "#b12b0f", "#a1280e", "#91240d", "#82200b", "#721c0a", "#631809", "531407", "#431106", "#340d05", "#240903", "#140502", "#050100", "#000"
@@ -113,6 +113,8 @@ function transform() {
 		.key(function(d){ return d.typetext; })
 		.entries(data);
 
+	for(i in nest) { days.push(nest[i].key) }
+
 	typeNest = d3.nest()
 			.key(function(d) { return d.type_ })
 			.entries(data);
@@ -133,7 +135,7 @@ function transform() {
 	// wait a little bit for d3 to make nest objects before calling next function, which requires them
 	setTimeout(function() {
 		queue(fns);
-	}, 3000);
+	}, 500);
 }
 
 function makeCells(){
@@ -147,4 +149,30 @@ function makeCells(){
 			cells.push(cell);
 		}
 	}
+}
+
+// count specific kinds of crimes for 2014 and 2013
+function compareData() {
+	countTypes(propCrimes);
+	countTypes(viCrimes);
+	countTypes(rapes);
+	countTypes(guns);
+
+	function countTypes(crimes) {
+		for(i in crimes.types) {
+			var crime = crimes.types[i];
+			crimes.old = crimes.old + getCount(crime, pastTypeNest);
+			crimes.now = crimes.now + getCount(crime, typeNest);
+
+			function getCount(crime, year) {
+				var count;
+				year.forEach(function(e) {
+					if (crime == e.key) {
+						count = e.values.length;
+					} else {}
+				});
+				return count;
+			}
+		}
+	}	
 }
