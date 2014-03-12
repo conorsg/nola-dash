@@ -206,17 +206,26 @@ function makeCells(){
 
 //draw dem graphs!
 function drawBar() {
+	setTimeout(function() {
+		queue(fns);
+	}, 500);
+
 	var data 			=	[propCrimes, viCrimes, rapes, guns, homicides];
+	var labels			=	["Property Crimes", "Violent Crimes", "Rapes", "Gun-related Crimes", "Homicides"];
+	var margin			=	50;
 	var height 			=	400;
 	var width 			= 	900;
 	var barWidth		=	width/(data.length * 2);
+	var padding			=	30;
 	var heightScalar 	=	height/ d3.max(data, function(d) { return +d.now });
 
 	var svg = d3.select("#hist-stats").append("svg")
-				.attr("height", height)
+				.attr("height", height + margin)
 				.attr("width", width);
 
-	var bars = svg.selectAll("rect")
+	var bars = svg.append("g")
+				.attr("class", "bars-group")
+				.selectAll("rect")
 				.data(data)
 				.enter();
 
@@ -224,15 +233,63 @@ function drawBar() {
 				.attr("class", "old")
 				.attr("width", barWidth)
 				.attr("height", function(d) { return d.old * heightScalar })
-				.attr("x", function(d,i) { return (i + (i + 1 ) ) * barWidth }) // odds
-				.attr("y", function(d) { return height - (d.old * heightScalar) })
-				.attr("stroke", "#eee");
+				.attr("x", function(d,i) { return ((i + (i + 1 ) ) * barWidth) + (i * padding) }) // odds
+				.attr("y", height)
+				.attr("stroke", "#eee")
+				.transition()
+		      		.duration(500)
+		      		.ease("out")
+		      		.attr("y", function(d) { return height - (d.old * heightScalar) });
 
 			bars.append("rect")
 				.attr("class", "now")
 				.attr("width", barWidth)
 				.attr("height", function(d) { return d.now * heightScalar })
-				.attr("x", function(d,i) { return (i*2) * barWidth }) // evens
-				.attr("y", function(d) { return height - (d.now * heightScalar) })
-				.attr("stroke", "#eee");
+				.attr("x", function(d,i) { return ((i*2) * barWidth) + (i * padding)  }) // evens
+				.attr("y", height)
+				.attr("stroke", "#eee")
+				.transition()
+		      		.duration(500)
+		      		.ease("out")
+		      		.attr("y", function(d) { return height - (d.now * heightScalar) });
+
+	var nums = svg.select(".bars-group")
+					.selectAll("text")
+					.data(data)
+					.enter();
+
+			nums.append("text")
+					.text(function(d) { return d.old })
+					.attr("x", function(d,i) { return ((i + (i + 1 ) ) * barWidth) + (i * padding) })
+					.attr("y", function(d) { return height - (d.old * heightScalar) })
+					.attr("dx", 30)
+					.attr("dy", 15)
+					.attr("text-anchor", "start")
+					.attr("opacity", 0)
+					.transition()
+						.duration(1000)
+						.attr("opacity", 1);
+
+			nums.append("text")
+					.text(function(d) { return d.now })
+					.attr("x", function(d,i) { return ((i*2) * barWidth) + (i * padding)})
+					.attr("y", function(d) { return height - (d.now * heightScalar) })
+					.attr("dx", 30)
+					.attr("dy", 15)
+					.attr("text-anchor", "start")
+					.attr("opacity", 0)
+					.transition()
+						.duration(1000)
+						.attr("opacity", 1);
+
+	var labels = svg.append("g")
+					.attr("transform", "translate(" + padding  + "," + (height + (margin/2) ) + ")")
+					.attr("class", "label")
+					.selectAll(".label")
+					.data(labels)
+					.enter()
+					.append("text")
+					.text(function(d) {return d })
+					.attr("x", function(d,i) { return i * 220 })
+					.style("text-anchor", "start");
 }
