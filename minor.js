@@ -210,13 +210,13 @@ function drawBar() {
 		queue(fns);
 	}, 500);
 
-	var data 			=	[propCrimes, viCrimes, rapes, guns, homicides];
-	var labels			=	["Property Crimes", "Violent Crimes", "Rapes", "Gun-related Crimes", "Homicides"];
+	var data 			=	[propCrimes, viCrimes, guns];
+	var labels			=	["Property Crimes", "Violent Crimes", "Gun-related Crimes"];
 	var margin			=	50;
 	var height 			=	400;
-	var width 			= 	900;
-	var barWidth		=	width/(data.length * 2);
+	var width 			= 	600;
 	var padding			=	30;
+	var barWidth		=	(width - (padding * data.length -1) )/(data.length * 2);
 	var heightScalar 	=	height/ d3.max(data, function(d) { return +d.now });
 
 	var svg = d3.select("#hist-stats").append("svg")
@@ -290,6 +290,6 @@ function drawBar() {
 					.enter()
 					.append("text")
 					.text(function(d) {return d })
-					.attr("x", function(d,i) { return i * 220 })
+					.attr("x", function(d,i) { return i * (barWidth * 2 + padding) })
 					.style("text-anchor", "start");
 }
