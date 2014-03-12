@@ -232,28 +232,28 @@ function drawBar() {
 				.enter();
 
 			bars.append("rect")
-				.attr("class", "old")
+				.attr("class", "now")
 				.attr("width", barWidth)
-				.attr("height", function(d) { return d.old * heightScalar })
+				.attr("height", function(d) { return d.now * heightScalar })
 				.attr("x", function(d,i) { return ((i + (i + 1 ) ) * barWidth) + (i * padding) }) // odds
 				.attr("y", height)
 				.attr("stroke", "#eee")
 				.transition()
 		      		.duration(500)
 		      		.ease("out")
-		      		.attr("y", function(d) { return height - (d.old * heightScalar) });
+		      		.attr("y", function(d) { return height - (d.now * heightScalar) });
 
 			bars.append("rect")
-				.attr("class", "now")
+				.attr("class", "old")
 				.attr("width", barWidth)
-				.attr("height", function(d) { return d.now * heightScalar })
+				.attr("height", function(d) { return d.old * heightScalar })
 				.attr("x", function(d,i) { return ((i*2) * barWidth) + (i * padding)  }) // evens
 				.attr("y", height)
 				.attr("stroke", "#eee")
 				.transition()
 		      		.duration(500)
 		      		.ease("out")
-		      		.attr("y", function(d) { return height - (d.now * heightScalar) });
+		      		.attr("y", function(d) { return height - (d.old * heightScalar) });
 
 	var nums = svg.select(".bars-group")
 					.selectAll("text")
@@ -263,7 +263,7 @@ function drawBar() {
 			nums.append("text")
 					.text(function(d) { return d.old })
 					.attr("x", function(d,i) { return ((i + (i + 1 ) ) * barWidth) + (i * padding) })
-					.attr("y", function(d) { return height - (d.old * heightScalar) })
+					.attr("y", function(d) { return height - (d.now * heightScalar) })
 					.attr("dx", 30)
 					.attr("dy", 15)
 					.attr("text-anchor", "start")
@@ -275,7 +275,7 @@ function drawBar() {
 			nums.append("text")
 					.text(function(d) { return d.now })
 					.attr("x", function(d,i) { return ((i*2) * barWidth) + (i * padding)})
-					.attr("y", function(d) { return height - (d.now * heightScalar) })
+					.attr("y", function(d) { return height - (d.old * heightScalar) })
 					.attr("dx", 30)
 					.attr("dy", 15)
 					.attr("text-anchor", "start")
