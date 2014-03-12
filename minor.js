@@ -283,7 +283,7 @@ function drawBar() {
 						.attr("opacity", 1);
 
 	var labels = svg.append("g")
-					.attr("transform", "translate(" + padding  + "," + (height + (margin/2) ) + ")")
+					.attr("transform", "translate(" + padding/2  + "," + (height + (margin/2) ) + ")")
 					.attr("class", "label")
 					.selectAll(".label")
 					.data(labels)
