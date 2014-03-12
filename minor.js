@@ -202,11 +202,11 @@ function makeCells(){
 
 //draw dem graphs!
 function drawBar() {
-	var data 		=	[propCrimes, viCrimes, rapes, guns, homicides];
-	var height 		=	400;
-	var width 		= 	900;
-	var barWidth	=	width/(data.length * 2);
-	var heightScalar; // got to make this so bars don't go off the svg as year goes on
+	var data 			=	[propCrimes, viCrimes, rapes, guns, homicides];
+	var height 			=	400;
+	var width 			= 	900;
+	var barWidth		=	width/(data.length * 2);
+	var heightScalar 	=	height/ d3.max(data, function(d) { return +d.now });
 
 	var svg = d3.select("#hist-stats").append("svg")
 				.attr("height", height)
@@ -219,17 +219,16 @@ function drawBar() {
 			bars.append("rect")
 				.attr("class", "old")
 				.attr("width", barWidth)
-				.attr("height", function(d) { return d.old })
+				.attr("height", function(d) { return d.old * heightScalar })
 				.attr("x", function(d,i) { return (i + (i + 1 ) ) * barWidth }) // odds
-				.attr("y", 200) //need to make fluid
+				.attr("y", function(d) { return height - (d.old * heightScalar) })
 				.attr("stroke", "#eee");
 
 			bars.append("rect")
 				.attr("class", "now")
 				.attr("width", barWidth)
-				.attr("height", function(d) { return d.now })
+				.attr("height", function(d) { return d.now * heightScalar })
 				.attr("x", function(d,i) { return (i*2) * barWidth }) // evens
-				.attr("y", 200) //need to make fluid
+				.attr("y", function(d) { return height - (d.now * heightScalar) })
 				.attr("stroke", "#eee");
-
 }
