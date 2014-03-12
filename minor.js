@@ -5,6 +5,7 @@ var fns 		=	[
 						getOldData,
 						transform,
 						compareData,
+						drawBar,
 						makeCells
 					];
 var url 		= 	'https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=typetext,timecreate,type_';
@@ -185,6 +186,9 @@ function compareData() {
 			}
 		}
 	}
+	setTimeout(function() {
+		queue(fns);
+	}, 500);
 }
 
 function makeCells(){
