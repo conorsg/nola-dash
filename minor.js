@@ -48,7 +48,7 @@ var colors 		= 	[
 					];
 queue(fns);
 
-// first we make a sequence of calls to get our data
+// first we make a sequence of calls to get our data, then draw the charts after the data has been retrieved and transformed
 function queue(arr) {
 	console.log(arr[c].name + ":" + c);
 	arr[c]();
@@ -202,11 +202,11 @@ function makeCells(){
 
 //draw dem graphs!
 function drawBar() {
+	var data 		=	[propCrimes, viCrimes, rapes, guns, homicides];
 	var height 		=	400;
 	var width 		= 	900;
-	var barWidth	=	150;
+	var barWidth	=	width/(data.length * 2);
 	var heightScalar; // got to make this so bars don't go off the svg as year goes on
-	var data 		=	[propCrimes, viCrimes, rapes, guns, homicides]
 
 	var svg = d3.select("#hist-stats").append("svg")
 				.attr("height", height)
@@ -214,11 +214,22 @@ function drawBar() {
 
 	var bars = svg.selectAll("rect")
 				.data(data)
-				.enter()
-				.append("rect")
-				.attr("class", "bar")
+				.enter();
+
+			bars.append("rect")
+				.attr("class", "old")
 				.attr("width", barWidth)
 				.attr("height", function(d) { return d.old })
-				.attr("x", function(d,i) { return i * barWidth })
-				.attr("y", 200); //need to make fluid
+				.attr("x", function(d,i) { return (i + (i + 1 ) ) * barWidth }) // odds
+				.attr("y", 200) //need to make fluid
+				.attr("stroke", "#eee");
+
+			bars.append("rect")
+				.attr("class", "now")
+				.attr("width", barWidth)
+				.attr("height", function(d) { return d.now })
+				.attr("x", function(d,i) { return (i*2) * barWidth }) // evens
+				.attr("y", 200) //need to make fluid
+				.attr("stroke", "#eee");
+
 }
