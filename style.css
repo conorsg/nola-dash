@@ -114,3 +114,21 @@ rect {
 .label text {
   font-size: 18px;
 }
+
+.text-stats {
+   text-align: center;
+   color: #444;
+}
+
+.text-stats .big-stat {
+  font-size: 86px;
+  font-weight: bold;
+}
+
+.thirteen {
+  color: #ef6548;
+}
+
+.fourteen {
+  color: #327a96;
+}

@@ -212,6 +212,8 @@ function drawBar() {
 
 	var data 			=	[propCrimes, viCrimes, guns];
 	var labels			=	["Property Crimes", "Violent Crimes", "Gun-related Crimes"];
+	var textData		=	[rapes, homicides];
+	var	textLabels		=	["Rapes", "Homicides"];
 	var margin			=	50;
 	var height 			=	400;
 	var width 			= 	600;
@@ -219,7 +221,7 @@ function drawBar() {
 	var barWidth		=	(width - (padding * data.length -1) )/(data.length * 2);
 	var heightScalar 	=	height/ d3.max(data, function(d) { return +d.now });
 
-	var svg = d3.select("#hist-stats").append("svg")
+	var svg = d3.select("#hist-stats .bar-chart").append("svg")
 				.attr("height", height + margin)
 				.attr("width", width);
 
@@ -292,4 +294,10 @@ function drawBar() {
 					.text(function(d) {return d })
 					.attr("x", function(d,i) { return i * (barWidth * 2 + padding) })
 					.style("text-anchor", "start");
+
+	d3.select("#hist-stats .text-stats")
+		.html('<h2 class="big-stat"><span class="thirteen">' + textData[0].old + '</span> : <span class="fourteen">' + textData[0].now + '</span></h2>\
+				<h4 class="subtitle">' + textLabels[0] + ' in <span class="thirteen">2013</span> and <span class="fourteen">2014</span></h4>\
+				<h2 class="big-stat"><span class="thirteen">' + textData[1].old + '</span> : <span class="fourteen">' + textData[1].now + '</span></h2>\
+				<h4 class="subtitle">' + textLabels[1] + ' in <span class="thirteen">2013</span> and <span class="fourteen">2014</span></h4>');
 }
