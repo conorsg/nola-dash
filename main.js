@@ -5,32 +5,51 @@ var barLog = d3.select('#hist-stats .log');
 var url = 'https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=typetext,timecreate,type_';
 var typesUrl = "https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=typetext&$group=typetext";
 var zipUrl = "https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=zip,count(zip)&$group=zip";
+var offset = 0;
 var zipCrimes = [];
 var crimeTypes = [];
 var days = [];
-var chartData;
 var nest;
 var cells = [];
 var homicides = [];
-var propertyCrimeTypes = ["65", "65P", "56", "56D", "55", "52", "51", "62", "62C", "62R", "67S", "67A", "67F", "67", "67P"];
-var violentCrimeTypes = ["38", "38D", "34S", "35D", "35", "43B", "42", "43", "30S", "37", "37D", "64K", "64J", "64G", "64" ];
-var rapeType = ["42", "43"];
-var gunType = ["64G", "95G"];
+var propertyCrimes = {
+	types: ["65", "65P", "56", "56D", "55", "52", "51", "62", "62C", "62R", "67S", "67A", "67F", "67", "67P"],
+	oldcount: 0,
+	newcount: 0
+};
+var violentCrimes = {
+	types: ["38", "38D", "34S", "35D", "35", "43B", "42", "43", "30S", "37", "37D", "64K", "64J", "64G", "64" ],
+	oldcount: 0,
+	newcount: 0 
+};
+var rapes = {
+	types: ["42", "43"],
+	oldcount: 0,
+	newcount: 0
+};
+var guns = {
+	types: ["64G", "95G"],
+	oldcount: 0,
+	newcount: 0
+};
 var colors = ["#fff", "#fef6f4", "#fde8e4", "#fbdbd5", "#facec5", "#f9c1b5", "#f7b4a6", "#f6a796", "#f49a86", "#f38c77", "#f27f67", "#f07258", "#ef6548", "#ee5838", "#ec4b29", "#eb3e19", "#e03714", "#d03312", "#c02f11", "#b12b0f", "#a1280e", "#91240d", "#82200b", "#721c0a", "#631809", "531407", "#431106", "#340d05", "#240903", "#140502", "#050100", "#000"];
+var data = [];
+var nest = [];
 
+dataCall(url,data);
 
-function drawAll() {
-	if(crimeTypes.done == true && zipCrimes.done == true && data.done == true) {
-		transformData(data);
-		makeCells();
-		for(i in nest) { days.push(nest[i].key) }
-		makeChart();
-		makeTopStats();
-		// makeDonut();
-	} else {
-		drawAll();
-	}
-}
+// function drawAll() {
+// 	if(crimeTypes.done == true && zipCrimes.done == true && data.done == true) {
+// 		transformData(data);
+// 		makeCells();
+// 		for(i in nest) { days.push(nest[i].key) }
+// 		makeChart();
+// 		makeTopStats();
+// 		// makeDonut();
+// 	} else {
+// 		drawAll();
+// 	}
+// }
 
 // get the data
 d3.json(typesUrl, function(error, json){
@@ -47,40 +66,78 @@ d3.json(zipUrl, function(error, json){
 	return zipCrimes.done = true;
 });
 
-d3.json(url, function(error, json){
-	data = json;
 
-	var offset = 0;
-	pageData(json);
+function dataCall(apiUrl,obj) {
+	d3.json(apiUrl, function(error, json){
+		dataObject = json;
+		pageData(json);
 	
-	function pageData(json) {
-		if(json.length == 1000) {
-			offset = offset + 1000;
-			chartLog.html('<p>> Fetching data...</p>')
+		function pageData(json) {
+			if(json.length == 1000) {
+				offset = offset + 1000;
+				chartLog.html('<p>> Fetching data...</p>')
 
-			d3.json(url + '&$offset=' + offset, function(error, json){
-				data = data.concat(json);
-				pageData(json);
-			});
-		} else {
-			chartLog.html('<p>> Data retrieved</p>');
-			data.done = true;
-			drawAll();
-			return false;
+				d3.json(url + '&$offset=' + offset, function(error, json){
+					dataObject = dataObject.concat(json);
+					pageData(json);
+				});
+			} else {
+				chartLog.html('<p>> Data retrieved</p>');
+				dataObject.done = true;
+				console.log(dataObject.length);
+				obj = dataObject;
+				return obj;
+				// drawAll();
+				offset = 0
+				return false;
+			}
 		}
-	}
-});
-
-function getComparativeData(crimes) {
-	var baseUrl = 'https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&type_=';
-	var baseThirteenUrl = 'https://data.nola.gov/resource/5fn8-vtui.json?disposition=RTF&type_';
-
-	for (i in crimes) {
-		d3.json(baseUrl + crimes[i], function(error,response) {
-			console.log(response.length);
-		});
-	}
+	});
 }
+
+// d3.json(url, function(error, json){
+// 	data = json;
+// 	pageData(json);
+	
+// 	function pageData(json) {
+// 		if(json.length == 1000) {
+// 			offset = offset + 1000;
+// 			chartLog.html('<p>> Fetching data...</p>')
+
+// 			d3.json(url + '&$offset=' + offset, function(error, json){
+// 				data = data.concat(json);
+// 				pageData(json);
+// 			});
+// 		} else {
+// 			chartLog.html('<p>> Data retrieved</p>');
+// 			data.done = true;
+// 			drawAll();
+// 			offset = 0
+// 			return false;
+// 		}
+// 	}
+// });
+
+// function getComparativeData(crimes) {
+// 	var baseUrl = 'https://data.nola.gov/resource/5fn8-vtui.json?disposition=RTF&type_=';
+// 	var recentDate = days[days.length -1];
+
+// 	for (i in crimes.types) {
+// 		d3.json(baseUrl + crimes.types[i], function(error,response) {
+// 			console.log(response.length);
+// 			if(response.length == 1000) {
+// 				offset = offset + 1000;
+// 				barLog.html('<p>> Fetching data...</p>');
+
+// 				d3.json(baseUrl + crimes[i] + '&$offset=' + offset, function(error, json) {
+
+// 				});
+// 			} else {
+
+// 			}
+// 		});
+// 	}
+// }
 
 // transform the data
 function transformData(data) {
