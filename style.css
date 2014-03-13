@@ -99,6 +99,11 @@ rect:hover, {
   stroke: #ddd;
 }
 
+#sub {
+  color: #4e4e4e;
+  font-size: 18px;
+}
+
 rect {
   cursor: pointer;;
 }

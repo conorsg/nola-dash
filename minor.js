@@ -225,13 +225,15 @@ function drawBar() {
 
 	currDayCopy.setFullYear(2013);
 
-	d3.select("#hist-stats .title").text("Comparing crime data up to " + currDayCopy.toDateString() + " and " + currentDay.toDateString() )
+	d3.select("#hist-stats #title").text("Compared to this time last year:")
+	d3.select("#hist-stats #sub").text("Crimes up to " + currDayCopy.toDateString() + " and up to " + currentDay.toDateString() )
 
 	var svg = d3.select("#hist-stats .bar-chart").append("svg")
 				.attr("height", height + margin)
-				.attr("width", width);
+				.attr("width", width + padding);
 
 	var bars = svg.append("g")
+				.attr("transform", "translate(" + padding+ ",0)")
 				.attr("class", "bars-group")
 				.selectAll("rect")
 				.data(data)
@@ -260,6 +262,13 @@ function drawBar() {
 		      		.duration(500)
 		      		.ease("out")
 		      		.attr("y", function(d) { return height - (d.old * heightScalar) });
+
+	svg.append("line")
+		.attr("x1", 0)
+		.attr("x2", width + padding)
+		.attr("y1", height)
+		.attr("y2", height)
+		.attr("stroke", "#4a4a4a");
 
 	var nums = svg.select(".bars-group")
 					.selectAll("text")
