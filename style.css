@@ -142,3 +142,7 @@ rect {
 .fourteen {
   color: #327a96;
 }
+
+#heat-grid {
+  margin-top: 100px;
+}
