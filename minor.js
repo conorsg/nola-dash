@@ -220,6 +220,12 @@ function drawBar() {
 	var padding			=	30;
 	var barWidth		=	(width - (padding * data.length -1) )/(data.length * 2);
 	var heightScalar 	=	height/ d3.max(data, function(d) { return +d.now });
+	var	currentDay		=	new Date(days[days.length -1]);
+	var currDayCopy 	= 	new Date(days[days.length -1]);
+
+	currDayCopy.setFullYear(2013);
+
+	d3.select("#hist-stats .title").text("Comparing crime data up to " + currDayCopy.toDateString() + " and " + currentDay.toDateString() )
 
 	var svg = d3.select("#hist-stats .bar-chart").append("svg")
 				.attr("height", height + margin)
