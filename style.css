@@ -41,11 +41,15 @@ footer li {
   display: inline-block;
 }
 
-section {
+/*section {
   border-bottom: 1px solid #ddd;
+}*/
+
+.bar-chart {
+  border-right: 1px solid #ddd;
 }
 
-.log p {
+.log {
   font-family: 'Source Code Pro', monospace;
   color: #b12b0f;
   margin-left: 40px;
@@ -102,6 +106,7 @@ rect:hover, {
 #sub {
   color: #4e4e4e;
   font-size: 18px;
+  margin-bottom: 40px;
 }
 
 rect {

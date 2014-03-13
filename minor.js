@@ -8,6 +8,7 @@ var fns 		=	[
 						drawBar,
 						makeCells
 					];
+var log			=	d3.select(".log");
 var url 		= 	'https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=typetext,timecreate,type_';
 var pastUrl 	= 	'http://data.nola.gov/resource/5fn8-vtui.json?disposition=RTF&$select=typetext,timecreate,type_';
 var typesUrl 	= 	'https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=typetext&$group=typetext';
@@ -48,6 +49,7 @@ var colors 		= 	[
 						"#fff", "#fef6f4", "#fde8e4", "#fbdbd5", "#facec5", "#f9c1b5", "#f7b4a6", "#f6a796", "#f49a86", "#f38c77", "#f27f67", "#f07258", "#ef6548", "#ee5838", "#ec4b29", "#eb3e19", "#e03714", "#d03312", "#c02f11", "#b12b0f", "#a1280e", "#91240d", "#82200b", "#721c0a", "#631809", "531407", "#431106", "#340d05", "#240903", "#140502", "#050100", "#000"
 					];
 queue(fns);
+log.text('> Getting crime categories...');
 
 // first we make a sequence of calls to get our data, then draw the charts after the data has been retrieved and transformed
 function queue(arr) {
@@ -63,6 +65,7 @@ function getCrimeTypes() {
 			crimeTypes.push(d.typetext);
 		});
 		queue(fns);
+		log.text('> Fetching 2014 data...');
 		crimeTypes.done = true;
 	});
 }
@@ -82,6 +85,7 @@ function getNewData() {
 				});
 			} else {
 				queue(fns);
+				log.text('> Fetching 2013 data...');
 				data.done = true;
 			}
 		}) (json);	
@@ -103,6 +107,7 @@ function getOldData() {
 				});
 			} else {
 				queue(fns);
+				log.text('> Transforming data...');
 				pastData.done = true;
 			}
 		}) (json);	
@@ -157,6 +162,7 @@ function transform() {
 
 	// wait a little bit for d3 to make nest objects before calling next function, which requires them
 	setTimeout(function() {
+		log.text('> Comparing 2013 and 2014 data...');
 		queue(fns);
 	}, 500);
 }
@@ -188,6 +194,7 @@ function compareData() {
 	}
 	setTimeout(function() {
 		queue(fns);
+		log.text('> Making chart components...');
 	}, 500);
 }
 
@@ -207,6 +214,7 @@ function makeCells(){
 //draw dem graphs!
 function drawBar() {
 	setTimeout(function() {
+		log.text('> Chart complete');
 		queue(fns);
 	}, 500);
 
@@ -300,7 +308,7 @@ function drawBar() {
 						.attr("opacity", 1);
 
 	var labels = svg.append("g")
-					.attr("transform", "translate(" + padding/2  + "," + (height + (margin/2) ) + ")")
+					.attr("transform", "translate(" + padding  + "," + (height + (margin/2) ) + ")")
 					.attr("class", "label")
 					.selectAll(".label")
 					.data(labels)
