@@ -42,7 +42,7 @@ var guns 		= 	{
 						now: 0
 					};
 var homicides 	= 	{
-						types: ["30S"],
+						types: ["30", "30C", "30S"],
 						old: 0,
 						now: 0
 					};
@@ -185,11 +185,11 @@ function compareData() {
 			function getCount(crime, year) {
 				var count;
 				year.forEach(function(e) {
-					if (crime == e.key) {
+					if (crime === e.key) {
 						count = e.values.length;
-					} else {}
+					}
 				});
-				return count;
+				if( isNaN(count) ) { return 0; } else { return count; } // check for undefined values which get returned if the crime is not in the data
 			}
 		}
 	}
