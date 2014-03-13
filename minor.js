@@ -220,6 +220,7 @@ function drawBar() {
 	var currDayCopy 	= 	new Date(days[days.length -1]);
 
 	currDayCopy.setFullYear(2013);
+	console.log(heightScalar);
 
 	d3.select("#hist-stats #title").text("Compared to this time last year:")
 	d3.select("#hist-stats #sub").text("Crimes up to " + currDayCopy.toDateString() + " and up to " + currentDay.toDateString() )
@@ -272,7 +273,7 @@ function drawBar() {
 					.enter();
 
 			nums.append("text")
-					.text(function(d) { return d.old })
+					.text(function(d) { return d.now })
 					.attr("x", function(d,i) { return ((i + (i + 1 ) ) * barWidth) + (i * padding) })
 					.attr("y", function(d) { return height - (d.now * heightScalar) })
 					.attr("dx", 30)
@@ -284,8 +285,8 @@ function drawBar() {
 						.attr("opacity", 1);
 
 			nums.append("text")
-					.text(function(d) { return d.now })
-					.attr("x", function(d,i) { return ((i*2) * barWidth) + (i * padding)})
+					.text(function(d) { return d.old })
+					.attr("x", function(d,i) { return ((i*2) * barWidth) + (i * padding) })
 					.attr("y", function(d) { return height - (d.old * heightScalar) })
 					.attr("dx", 30)
 					.attr("dy", 15)
