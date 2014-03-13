@@ -21,3 +21,4 @@ How to group dates once we get more days in the year?
  * Cannot sort by day using SoQL because of dumb timecreate format
  * Pulling all data by cycling through paginated data is resource intensive
  * Should heatmap be granular, like a grid, or continuous?
+ * Refactor to move styles to CSS

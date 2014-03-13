@@ -9,7 +9,7 @@ var fns 		=	[
 						makeCells,
 						makeChart
 					];
-var log			=	d3.select(".log");
+var log			=	d3.select(".log p");
 var url 		= 	'https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=typetext,timecreate,type_';
 var pastUrl 	= 	'http://data.nola.gov/resource/5fn8-vtui.json?disposition=RTF&$select=typetext,timecreate,type_';
 var typesUrl 	= 	'https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=typetext&$group=typetext';
@@ -220,7 +220,6 @@ function drawBar() {
 	var currDayCopy 	= 	new Date(days[days.length -1]);
 
 	currDayCopy.setFullYear(2013);
-	console.log(heightScalar);
 
 	d3.select("#hist-stats #title").text("Compared to this time last year:")
 	d3.select("#hist-stats #sub").text("Crimes up to " + currDayCopy.toDateString() + " and up to " + currentDay.toDateString() )
@@ -307,11 +306,42 @@ function drawBar() {
 					.attr("x", function(d,i) { return i * (barWidth * 2 + padding) })
 					.style("text-anchor", "start");
 
+	var legend = svg.append("g")
+					.attr("class", "legend")
+					.attr("transform", "translate(" + (width - 100) + ",50)")
+					.attr("height", "200")
+					.attr("width", "100");
+
+		legend.append("rect")
+			.attr("height", "20")
+			.attr("width", "20")
+			.attr("class", "old");
+
+		legend.append("rect")
+			.attr("height", "20")
+			.attr("width", "20")
+			.attr("y", "25")
+			.attr("class", "now");
+
+		legend.append("text")
+			.attr("x", "35")
+			.attr("y", "15")
+			.style("color", "#4e4e4e")
+			.style("font-size", "18")
+			.text("2013");
+
+		legend.append("text")
+			.attr("x", "35")
+			.attr("y", "40")
+			.style("color", "#4e4e4e")
+			.style("font-size", "18")
+			.text("2014");
+
 	d3.select("#hist-stats .text-stats")
 		.html('<h2 class="big-stat"><span class="thirteen">' + textData[0].old + '</span> : <span class="fourteen">' + textData[0].now + '</span></h2>\
-				<h4 class="subtitle">' + textLabels[0] + ' in <span class="thirteen">2013</span> and <span class="fourteen">2014</span></h4>\
+				<h4 class="subtitle">' + textLabels[0] + ' this time of year, <span class="thirteen">2013</span> and <span class="fourteen">2014</span></h4>\
 				<h2 class="big-stat"><span class="thirteen">' + textData[1].old + '</span> : <span class="fourteen">' + textData[1].now + '</span></h2>\
-				<h4 class="subtitle">' + textLabels[1] + ' in <span class="thirteen">2013</span> and <span class="fourteen">2014</span></h4>');
+				<h4 class="subtitle">' + textLabels[1] + ' this time of year, <span class="thirteen">2013</span> and <span class="fourteen">2014</span></h4>');
 }
 
 // make cells for heat grid
@@ -337,11 +367,11 @@ function makeChart() {
 
 	d3.select("#heat-grid h2").text("All crimes reported to NOPD, 2014:");
 
-	var cellSize = 12;
-	var rowNum = crimeTypes.length;
-	var colNum = days.length
-	var width = (cellSize) * colNum + 200;
-	var height = cellSize * rowNum + 66;
+	var cellSize 	=	12;
+	var rowNum 		= 	crimeTypes.length;
+	var colNum 		= 	days.length
+	var width 		= 	cellSize * colNum + 200;
+	var height 		= 	cellSize * rowNum + 66;
 
 	var svg = d3.select('#heat-grid').append("svg")
 		.attr("width", width)
