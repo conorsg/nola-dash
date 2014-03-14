@@ -398,7 +398,7 @@ function makeChart() {
 		.data(nest)
 		.enter()
 		.append("text")
-		.text(function(d) { return d.key })
+		.text(function(d) { return new Date(d.key).toDateString() })
 		.attr("y", function(d,i) { return (i+1) * cellSize })
 		.attr("x", 0)
 		.attr("class", "graph-label")
