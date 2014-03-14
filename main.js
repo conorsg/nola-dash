@@ -1,198 +1,377 @@
-// Conor Gaffney, 2014
-
-var chartLog = d3.select('#heat-grid .log');
-var barLog = d3.select('#hist-stats .log');
-var url = 'https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=typetext,timecreate,type_';
-var typesUrl = "https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=typetext&$group=typetext";
-var zipUrl = "https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=zip,count(zip)&$group=zip";
-var offset = 0;
-var zipCrimes = [];
-var crimeTypes = [];
-var days = [];
+var c 			=	0;
+var fns 		=	[
+						getCrimeTypes,
+						getNewData,
+						getOldData,
+						transform,
+						compareData,
+						drawBar,
+						makeCells,
+						makeChart
+					];
+var log			=	d3.select(".log p");
+var url 		= 	'https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=typetext,timecreate,type_';
+var pastUrl 	= 	'http://data.nola.gov/resource/5fn8-vtui.json?disposition=RTF&$select=typetext,timecreate,type_';
+var typesUrl 	= 	'https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=typetext&$group=typetext';
+var crimeTypes 	=	[];
+var days		=	[];
+var cells		=	[];
+var data;
+var pastData;
 var nest;
-var cells = [];
-var homicides = [];
-var propertyCrimes = {
-	types: ["65", "65P", "56", "56D", "55", "52", "51", "62", "62C", "62R", "67S", "67A", "67F", "67", "67P"],
-	oldcount: 0,
-	newcount: 0
-};
-var violentCrimes = {
-	types: ["38", "38D", "34S", "35D", "35", "43B", "42", "43", "30S", "37", "37D", "64K", "64J", "64G", "64" ],
-	oldcount: 0,
-	newcount: 0 
-};
-var rapes = {
-	types: ["42", "43"],
-	oldcount: 0,
-	newcount: 0
-};
-var guns = {
-	types: ["64G", "95G"],
-	oldcount: 0,
-	newcount: 0
-};
-var colors = ["#fff", "#fef6f4", "#fde8e4", "#fbdbd5", "#facec5", "#f9c1b5", "#f7b4a6", "#f6a796", "#f49a86", "#f38c77", "#f27f67", "#f07258", "#ef6548", "#ee5838", "#ec4b29", "#eb3e19", "#e03714", "#d03312", "#c02f11", "#b12b0f", "#a1280e", "#91240d", "#82200b", "#721c0a", "#631809", "531407", "#431106", "#340d05", "#240903", "#140502", "#050100", "#000"];
-var data = [];
-var nest = [];
+var pastNest;
+var homicides 	= 	[];
+var propCrimes 	= 	{
+						types: ["65", "65P", "56", "56D", "55", "52", "51", "62", "62C", "62R", "67S", "67A", "67F", "67", "67P"],
+						old: 0,
+						now: 0
+					};
+var viCrimes 	= 	{
+						types: ["38", "38D", "34S", "35D", "35", "43B", "42", "43", "30S", "37", "37D", "64K", "64J", "64G", "64" ],
+						old: 0,
+						now: 0 
+					};
+var rapes 		= 	{
+						types: ["42", "43"],
+						old: 0,
+						now: 0
+					};
+var guns 		= 	{
+						types: ["64G", "95G"],
+						old: 0,
+						now: 0
+					};
+var homicides 	= 	{
+						types: ["30", "30C", "30S"],
+						old: 0,
+						now: 0
+					};
+var colors 		= 	[
+						"#fff", "#fef6f4", "#fde8e4", "#fbdbd5", "#facec5", "#f9c1b5", "#f7b4a6", "#f6a796", "#f49a86", "#f38c77", "#f27f67", "#f07258", "#ef6548", "#ee5838", "#ec4b29", "#eb3e19", "#e03714", "#d03312", "#c02f11", "#b12b0f", "#a1280e", "#91240d", "#82200b", "#721c0a", "#631809", "531407", "#431106", "#340d05", "#240903", "#140502", "#050100", "#000"
+					];
+queue(fns);
+log.text('> Getting crime categories...');
 
-dataCall(url,data);
+// first we make a sequence of calls to get our data, then draw the charts after the data has been retrieved and transformed
+function queue(arr) {
+	console.log(arr[c].name + ":" + c);
+	arr[c]();
+	c++;
+}
 
-// function drawAll() {
-// 	if(crimeTypes.done == true && zipCrimes.done == true && data.done == true) {
-// 		transformData(data);
-// 		makeCells();
-// 		for(i in nest) { days.push(nest[i].key) }
-// 		makeChart();
-// 		makeTopStats();
-// 		// makeDonut();
-// 	} else {
-// 		drawAll();
-// 	}
-// }
-
-// get the data
-d3.json(typesUrl, function(error, json){
-	json.forEach(function(d){
-		crimeTypes.push(d.typetext);
-	});
-	return crimeTypes.done = true;
-});
-
-d3.json(zipUrl, function(error, json){
-	json.forEach(function(d){
-		zipCrimes.push(d);
-	});
-	return zipCrimes.done = true;
-});
-
-
-function dataCall(apiUrl,obj) {
-	d3.json(apiUrl, function(error, json){
-		dataObject = json;
-		pageData(json);
-	
-		function pageData(json) {
-			if(json.length == 1000) {
-				offset = offset + 1000;
-				chartLog.html('<p>> Fetching data...</p>')
-
-				d3.json(url + '&$offset=' + offset, function(error, json){
-					dataObject = dataObject.concat(json);
-					pageData(json);
-				});
-			} else {
-				chartLog.html('<p>> Data retrieved</p>');
-				dataObject.done = true;
-				console.log(dataObject.length);
-				obj = dataObject;
-				return obj;
-				// drawAll();
-				offset = 0
-				return false;
-			}
-		}
+// retrieve 2014 crime types
+function getCrimeTypes() {
+	d3.json(typesUrl, function(error, json){
+		json.forEach(function(d){
+			crimeTypes.push(d.typetext);
+		});
+		queue(fns);
+		log.text('> Fetching 2014 data...');
+		crimeTypes.done = true;
 	});
 }
 
-// d3.json(url, function(error, json){
-// 	data = json;
-// 	pageData(json);
-	
-// 	function pageData(json) {
-// 		if(json.length == 1000) {
-// 			offset = offset + 1000;
-// 			chartLog.html('<p>> Fetching data...</p>')
+// retrieve 2014 data
+function getNewData() {
+	d3.json(url, function(error,json) {
+		data = json;
+		i = 1;
 
-// 			d3.json(url + '&$offset=' + offset, function(error, json){
-// 				data = data.concat(json);
-// 				pageData(json);
-// 			});
-// 		} else {
-// 			chartLog.html('<p>> Data retrieved</p>');
-// 			data.done = true;
-// 			drawAll();
-// 			offset = 0
-// 			return false;
-// 		}
-// 	}
-// });
+		(function pageData(json) {
+			if(json.length === 1000) {
+				d3.json(url + '&$offset=' + (i*1000), function(error,json) {
+					data = data.concat(json);
+					i++;
+					pageData(json);
+				});
+			} else {
+				queue(fns);
+				log.text('> Fetching 2013 data...');
+				data.done = true;
+			}
+		}) (json);	
+	});
+}
 
-// function getComparativeData(crimes) {
-// 	var baseUrl = 'https://data.nola.gov/resource/5fn8-vtui.json?disposition=RTF&type_=';
-// 	var recentDate = days[days.length -1];
+// retrieve 2013 data
+function getOldData() {
+	d3.json(pastUrl, function(error,json) {
+		pastData = json;
+		i = 1;
 
-// 	for (i in crimes.types) {
-// 		d3.json(baseUrl + crimes.types[i], function(error,response) {
-// 			console.log(response.length);
-// 			if(response.length == 1000) {
-// 				offset = offset + 1000;
-// 				barLog.html('<p>> Fetching data...</p>');
+		(function pageData(json) {
+			if(json.length === 1000) {
+				d3.json(pastUrl + '&$offset=' + (i*1000), function(error,json) {
+					pastData = pastData.concat(json);
+					i++;
+					pageData(json);
+				});
+			} else {
+				queue(fns);
+				log.text('> Transforming data...');
+				pastData.done = true;
+			}
+		}) (json);	
+	});	
+}
 
-// 				d3.json(baseUrl + crimes[i] + '&$offset=' + offset, function(error, json) {
-
-// 				});
-// 			} else {
-
-// 			}
-// 		});
-// 	}
-// }
-
-// transform the data
-function transformData(data) {
-	chartLog.html('<p>> Analyzing the data...</p>');
-
-	// get rid of the hours, minutes, seconds
+// now we transform the data to be more manipulable and writeable for charts
+function transform() {
 	data.forEach(function(d){
-		d.timecreate = d.timecreate.split(" ")[0]
+		d.timecreate = new Date(d.timecreate.split(" ")[0]);
 	});
 
-	// aggregate the data by day and then violation type
 	nest = d3.nest()
 		.key(function(d){ return d.timecreate; })
 		.key(function(d){ return d.typetext; })
 		.entries(data);
-	chartLog.html('<p>> Data transformed</p>');
 
-	// count homicides
-	for(i in data) {
-		if(data[i].type_ === "30S") {
-			homicides.push(data[i])
+	for(i in nest) { days.push(nest[i].key) }
+
+	typeNest = d3.nest()
+			.key(function(d) { return d.type_ })
+			.entries(data);
+
+	pastData.forEach(function(d){
+		d.timecreate = new Date(d.timecreate.split(" ")[0]);
+	});
+
+	pastNest = d3.nest()
+				.key(function(d){ return d.timecreate; })
+				.key(function(d){ return d.typetext; })
+				.entries(pastData);
+
+	pastTypeNest = d3.nest()
+					.key(function(d) { return d.type_ })
+					.entries(pastData);
+
+	// this is a hacky way of getting data objects that compare to this time last year
+	pastNestDelim = pastNest.slice(0, days.length);
+
+	pastDataDelim = [];
+
+	for (i in pastNestDelim) {
+		for(l in pastNestDelim[i].values) {
+			for(j in pastNestDelim[i].values[l].values)
+				pastDataDelim.push(pastNestDelim[i].values[l].values[j]);
 		}
 	}
 
-	// turn zipCrimes into numbers
-	for(i in zipCrimes) {
-		if(zipCrimes[i].zip == null || zipCrimes[i].count_zip == null) {
-			zipCrimes.splice(i,1);
-		} else{}
-		zipCrimes[i].count_zip = Number(zipCrimes[i].count_zip);
-		zipCrimes[i].zip = Number(zipCrimes[i].zip);
-	}
+	pastTypeNestDelim = d3.nest()
+						.key(function(d) { return d.type_ })
+						.entries(pastDataDelim);
+
+	// wait a little bit for d3 to make nest objects before calling next function, which requires them
+	setTimeout(function() {
+		log.text('> Comparing 2013 and 2014 data...');
+		queue(fns);
+	}, 500);
 }
 
-// create flatter data object for heatmap chart
+// count specific kinds of crimes for 2014 and 2013
+function compareData() {
+	countTypes(propCrimes);
+	countTypes(viCrimes);
+	countTypes(rapes);
+	countTypes(guns);
+	countTypes(homicides);
+
+	function countTypes(crimes) {
+		for(i in crimes.types) {
+			var crime = crimes.types[i];
+			crimes.old = crimes.old + getCount(crime, pastTypeNestDelim);
+			crimes.now = crimes.now + getCount(crime, typeNest);
+
+			function getCount(crime, year) {
+				var count;
+				year.forEach(function(e) {
+					if (crime === e.key) {
+						count = e.values.length;
+					}
+				});
+				if( isNaN(count) ) { return 0; } else { return count; } // check for undefined values which get returned if the crime is not in the data
+			}
+		}
+	}
+	setTimeout(function() {
+		queue(fns);
+		log.text('> Making chart components...');
+	}, 500);
+}
+
+//draw dem graphs!
+function drawBar() {
+	setTimeout(function() {
+		log.text('> Charts complete');
+		queue(fns);
+	}, 500);
+
+	var data 			=	[propCrimes, viCrimes, guns];
+	var labels			=	["Property Crimes", "Violent Crimes", "Gun-related Crimes"];
+	var textData		=	[rapes, homicides];
+	var	textLabels		=	["Rapes", "Homicides"];
+	var margin			=	50;
+	var height 			=	400;
+	var width 			= 	600;
+	var padding			=	30;
+	var barWidth		=	(width - (padding * data.length -1) )/(data.length * 2);
+	var heightScalar 	=	height/ d3.max(data, function(d) { return +d.now });
+	var	currentDay		=	new Date(days[days.length -1]);
+	var currDayCopy 	= 	new Date(days[days.length -1]);
+
+	currDayCopy.setFullYear(2013);
+
+	d3.select("#hist-stats #title").text("Compared to this time last year:")
+	d3.select("#hist-stats #sub").text("Crimes up to " + currDayCopy.toDateString() + " and up to " + currentDay.toDateString() )
+
+	var svg = d3.select("#hist-stats .bar-chart").append("svg")
+				.attr("height", height + margin)
+				.attr("width", width + padding);
+
+	var bars = svg.append("g")
+				.attr("transform", "translate(" + padding+ ",0)")
+				.attr("class", "bars-group")
+				.selectAll("rect")
+				.data(data)
+				.enter();
+
+			bars.append("rect")
+				.attr("class", "now")
+				.attr("width", barWidth)
+				.attr("height", function(d) { return d.now * heightScalar })
+				.attr("x", function(d,i) { return ((i + (i + 1 ) ) * barWidth) + (i * padding) }) // odds
+				.attr("y", height)
+				.attr("stroke", "#eee")
+				.transition()
+		      		.duration(500)
+		      		.ease("out")
+		      		.attr("y", function(d) { return height - (d.now * heightScalar) });
+
+			bars.append("rect")
+				.attr("class", "old")
+				.attr("width", barWidth)
+				.attr("height", function(d) { return d.old * heightScalar })
+				.attr("x", function(d,i) { return ((i*2) * barWidth) + (i * padding)  }) // evens
+				.attr("y", height)
+				.attr("stroke", "#eee")
+				.transition()
+		      		.duration(500)
+		      		.ease("out")
+		      		.attr("y", function(d) { return height - (d.old * heightScalar) });
+
+	svg.append("line")
+		.attr("x1", 0)
+		.attr("x2", width + padding)
+		.attr("y1", height)
+		.attr("y2", height)
+		.attr("stroke", "#4a4a4a");
+
+	var nums = svg.select(".bars-group")
+					.selectAll("text")
+					.data(data)
+					.enter();
+
+			nums.append("text")
+					.text(function(d) { return d.now })
+					.attr("x", function(d,i) { return ((i + (i + 1 ) ) * barWidth) + (i * padding) })
+					.attr("y", function(d) { return height - (d.now * heightScalar) })
+					.attr("dx", 30)
+					.attr("dy", 15)
+					.attr("text-anchor", "start")
+					.attr("opacity", 0)
+					.transition()
+						.duration(1000)
+						.attr("opacity", 1);
+
+			nums.append("text")
+					.text(function(d) { return d.old })
+					.attr("x", function(d,i) { return ((i*2) * barWidth) + (i * padding) })
+					.attr("y", function(d) { return height - (d.old * heightScalar) })
+					.attr("dx", 30)
+					.attr("dy", 15)
+					.attr("text-anchor", "start")
+					.attr("opacity", 0)
+					.transition()
+						.duration(1000)
+						.attr("opacity", 1);
+
+	var labels = svg.append("g")
+					.attr("transform", "translate(" + (padding + padding/2)  + "," + (height + (margin/2) ) + ")")
+					.attr("class", "label")
+					.selectAll(".label")
+					.data(labels)
+					.enter()
+					.append("text")
+					.text(function(d) {return d })
+					.attr("x", function(d,i) { return i * (barWidth * 2 + padding) })
+					.style("text-anchor", "start");
+
+	var legend = svg.append("g")
+					.attr("class", "legend")
+					.attr("transform", "translate(" + (width - 100) + ",50)")
+					.attr("height", "200")
+					.attr("width", "100");
+
+		legend.append("rect")
+			.attr("height", "20")
+			.attr("width", "20")
+			.attr("class", "old");
+
+		legend.append("rect")
+			.attr("height", "20")
+			.attr("width", "20")
+			.attr("y", "25")
+			.attr("class", "now");
+
+		legend.append("text")
+			.attr("x", "35")
+			.attr("y", "15")
+			.style("color", "#4e4e4e")
+			.style("font-size", "18")
+			.text("2013");
+
+		legend.append("text")
+			.attr("x", "35")
+			.attr("y", "40")
+			.style("color", "#4e4e4e")
+			.style("font-size", "18")
+			.text("2014");
+
+	d3.select("#hist-stats .text-stats")
+		.html('<h2 class="big-stat"><span class="thirteen">' + textData[0].old + '</span> : <span class="fourteen">' + textData[0].now + '</span></h2>\
+				<h4 class="subtitle">' + textLabels[0] + ' this time of year, <span class="thirteen">2013</span> and <span class="fourteen">2014</span></h4>\
+				<h2 class="big-stat"><span class="thirteen">' + textData[1].old + '</span> : <span class="fourteen">' + textData[1].now + '</span></h2>\
+				<h4 class="subtitle">' + textLabels[1] + ' this time of year, <span class="thirteen">2013</span> and <span class="fourteen">2014</span></h4>');
+}
+
+// make cells for heat grid
 function makeCells(){
+	setTimeout(function() {
+		queue(fns);
+	}, 500);
+
 	for(i in nest) {
-		for(c in nest[i].values){
+		for(j in nest[i].values){
 			var cell = {
 				date: nest[i].key,
-				crime: nest[i].values[c].key,
-				count: nest[i].values[c].values.length
+				crime: nest[i].values[j].key,
+				count: nest[i].values[j].values.length
 			}
 			cells.push(cell);
 		}
 	}
 }
 
-// make the chart
+// make the heat grid
 function makeChart() {
-	var cellSize = 12;
-	var rowNum = crimeTypes.length;
-	var colNum = days.length
-	var width = (cellSize) * colNum + 200;
-	var height = cellSize * rowNum + 66;
+
+	d3.select("#heat-grid h2").text("All crimes reported to NOPD, 2014:");
+
+	var cellSize 	=	12;
+	var rowNum 		= 	crimeTypes.length;
+	var colNum 		= 	days.length
+	var width 		= 	cellSize * colNum + 200;
+	var height 		= 	cellSize * rowNum + 66;
 
 	var svg = d3.select('#heat-grid').append("svg")
 		.attr("width", width)
@@ -280,15 +459,9 @@ function makeChart() {
 		.on("mouseout", function() {
 			d3.select("#tooltip").classed("hidden", true);
 		});
-	chartLog.html('<p>> Chart complete</p>');
 }
 
-// make top stats charts
-
-function makeTopStats() {
-	d3.select(".homicides").html('<h2>Homicides:</h2><h1 class="count">' + homicides.length + '</h1><h3 class="sub-title">Population: 369,250');
-}
-
+// donut chart to be
 function makeDonut() {
 	var width = 300;
 	var height = 300;
