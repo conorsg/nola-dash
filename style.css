@@ -41,9 +41,10 @@ footer li {
   display: inline-block;
 }
 
-/*section {
-  border-bottom: 1px solid #ddd;
-}*/
+.module {
+  background: #EEE;
+  border: 1px solid #DDD;
+}
 
 .bar-chart {
   border-right: 1px solid #ddd;
@@ -52,7 +53,8 @@ footer li {
 .log p {
   font-family: 'Source Code Pro', monospace;
   color: #b12b0f;
-  margin-left: 40px;
+  text-align: center;
+  margin: 20px;
 }
 
 .graph-label {

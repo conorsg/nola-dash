@@ -16,12 +16,21 @@
   </head>
   <body>
 
-  <header>
-    <h1>NOLA Crime Dashboard Prototype</h1>
-    <h3>Data from <a href="https://data.nola.gov">data.nola.gov</a></h3> 
+  <header class="clearfix">
+    <hgroup class="col-sm-4 clearfix">
+      <h1>NOLA Crime Dashboard Prototype</h1>
+      <h3>Data from <a href="https://data.nola.gov">data.nola.gov</a></h3> 
+    </hgroup>
+
+    <hgroup class="col-sm-4 col-sm-offset-3 caveat clearfix">
+      <h3>Caveat Emptor:</h3>
+      <p>These charts are made with data from <a href="https://data.nola.gov">data.nola.gov</a>. Data are published on a 48 hour delay, so are never <em>too</em> up-to-date. Data also are not necessarily revised. So if, for instance, an incident initially published as a homicide is later determined to be an accident, then this change will not necessarily make it to <a href="https://data.nola.gov">data.nola.gov</a> and this page's homicide count will be inaccurate. It is simply a limitation of the dataset that is available to us.</p>
+      <p>Additionally, and most imporantly, these data are only <strong>calls for service with a report to follow</strong>. Each datum is not necessarily an actual crime, only an instance of an NOPD unit dispatched to a scene that is interesting enough to warrant a report. Therefore, the data are only a rough approximation of actual reported crimes. Reports-to-follow typically mean the incident required some action on the part of the NOPD, and so typically do correspond to a crime, but not always.</p>
+    </hgroup>
   </header>
 
   <div class="container main" role="main">
+
     <div class="log">
         <p>> Initializing...</p>
     </div>
