@@ -454,7 +454,7 @@ function makeChart() {
 				.style("left", (d3.event.pageX+10) + "px")
                 .style("top", (d3.event.pageY-10) + "px")
                 .select("#value")
-                .html("<p>Date: " + d.date + "</p><p>Crime: " + d.crime + "</p>Count: " + d.count + "</p>");
+                .html("<p>Date: " + new Date(d.date).toDateString() + "</p><p>Crime: " + d.crime + "</p>Count: " + d.count + "</p>");
             d3.select("#tooltip").classed("hidden", false);
 		})
 		.on("mouseout", function() {
