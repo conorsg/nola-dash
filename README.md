@@ -24,3 +24,4 @@ Socrata has a query-able API, however there are two annoying issues with the API
  * Refactor js to move styles to CSS
  * Make more robust height scalar for bar graphs
  * Reformat heat grid dates from days to weeks
+ * Use local storage to cache datasets
