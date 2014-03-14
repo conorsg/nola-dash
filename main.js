@@ -180,8 +180,6 @@ function compareData() {
 	function countTypes(crimes) {
 		for(i in crimes.types) {
 			var crime = crimes.types[i];
-			crimes.old = crimes.old + getCount(crime, pastTypeNestDelim);
-			crimes.now = crimes.now + getCount(crime, typeNest);
 
 			function getCount(crime, year) {
 				var count;
@@ -192,6 +190,9 @@ function compareData() {
 				});
 				if( isNaN(count) ) { return 0; } else { return count; } // check for undefined values which get returned if the crime is not in the data
 			}
+			
+			crimes.old = crimes.old + getCount(crime, pastTypeNestDelim);
+			crimes.now = crimes.now + getCount(crime, typeNest);
 		}
 	}
 	setTimeout(function() {
