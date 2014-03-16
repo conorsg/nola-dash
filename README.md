@@ -8,7 +8,7 @@ See it at [s3.conorgaffney.com/what-dat](http://s3.conorgaffney.com/what-dat/)
 
 The data are calls for service with the disposition of "report to follow." This means that NOPD dispatched a unit to invesitgate an incident and the officers dispatched filed a report about what they found. A report usually means there was an actual crime the officers were dispatched to, but of course can mean just about anything. However, that's about as close as we can get to verified crimes with these data. 
 
-Socrata has a query-able API, however there are two annoying issues with the API and the data that forced me to make multiple calls and build big data arrays on the page, and thus make this code much messier. The first is that Socrata only returns a maximum of 1000 datapoints, causing you to have to page through the dataset. The second issue is that time (an important sorting criteria for these graphs) is returned as a string, rather than as a more sortable data object. So, you cannot send a request to Socrata with a meaningful date query. 
+Socrata has a query-able API, however there are two annoying issues with the API and the data that forced me to make multiple calls and build big data arrays on the page, and thus make this code much messier. The first is that a call to Socrata only returns a maximum of 1000 datapoints, causing you to have to page through the dataset. The second issue is that time (an important sorting criterion for these graphs) is returned as a string, rather than as a more sortable data object. So, you cannot send a request to Socrata with a meaningful date query. 
 
 ###Other charts
  * Donut chart showing proportion of crimes by ZIP, click on segment to bring up polygon of ZIP on small map
