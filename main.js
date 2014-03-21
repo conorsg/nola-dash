@@ -16,8 +16,8 @@ var typesUrl 	= 	'https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&
 var crimeTypes 	=	[];
 var days		=	[];
 var cells		=	[];
-var data;
-var pastData;
+var data 		=	[];
+var pastData 	=	[];
 var nest;
 var pastNest;
 var homicides 	= 	[];
@@ -52,11 +52,24 @@ var colors 		= 	[
 
 queue(fns);
 log.text('> Getting crime categories...');
+logObjects();
 
 // first we make a sequence of calls to get our data, then draw the charts after the data has been retrieved and transformed
 function queue(arr) {
 	arr[c]();
 	c++;
+}
+
+function logObjects() {
+	if(!data.done || !pastData.done) {
+		d3.select('.log .object-count').text( '(' + (data.length + pastData.length) + ' data objects retrieved)');
+		setTimeout(function() {
+			logObjects();
+		},100)
+	} else { 
+		d3.select('.log .object-count').text( '(' + (data.length + pastData.length) + ' data objects retrieved)');
+		return false;
+	}
 }
 
 // retrieve 2014 crime types
