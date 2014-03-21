@@ -7,7 +7,7 @@ var fns 		=	[
 						compareData,
 						drawBar,
 						makeCells,
-						makeChart
+						drawGrid
 					];
 var log			=	d3.select(".log p");
 var url 		= 	'https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=typetext,timecreate,type_';
@@ -377,7 +377,7 @@ function makeCells(){
 }
 
 // make the heat grid
-function makeChart() {
+function drawGrid() {
 
 	d3.select("#heat-grid h2").text("All crimes reported to NOPD, 2014:");
 
