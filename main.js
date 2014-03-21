@@ -55,7 +55,6 @@ log.text('> Getting crime categories...');
 
 // first we make a sequence of calls to get our data, then draw the charts after the data has been retrieved and transformed
 function queue(arr) {
-	console.log(arr[c].name + ":" + c);
 	arr[c]();
 	c++;
 }
