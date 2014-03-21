@@ -393,7 +393,7 @@ function drawGrid() {
 		.data(nest);
 
 	var rowLabels = svg.append("g")
-		.attr("transform", "translate(200,60)")
+		.attr("transform", "translate(200,100)")
 		.attr("class", "rowLabels")
 		.selectAll(".rowLabel")
 		.data(crimeTypes)
@@ -406,7 +406,7 @@ function drawGrid() {
 		.attr("y", function(d,i) { return (i+1) * cellSize });
 
 	var colLabels = svg.append("g")
-		.attr("transform", "translate(198,60)")
+		.attr("transform", "translate(198,100)")
 		.attr("class", "colLabels")
 		.selectAll(".colLabel")
 		.data(nest)
@@ -419,7 +419,7 @@ function drawGrid() {
 		.attr("transform", "rotate(-90)");
 
 	var vertGrid = svg.append("g")
-		.attr("transform", "translate(200,60)")
+		.attr("transform", "translate(200,100)")
 		.attr("class", "vert-grid")
 		.selectAll(".vert-grid")
 		.data(days)
@@ -432,7 +432,7 @@ function drawGrid() {
 		.attr("stroke", "#eee");
 
 	var horzGrid = svg.append("g")
-		.attr("transform", "translate(200,60)")
+		.attr("transform", "translate(200,100)")
 		.attr("class", "horz-grid")
 		.selectAll(".horz-grid")
 		.data(crimeTypes)
@@ -450,7 +450,7 @@ function drawGrid() {
 
 	var heatMap = svg.append("g")
 		.attr("class", "cells")
-		.attr("transform", "translate(202,60)")
+		.attr("transform", "translate(202,100)")
 		.selectAll(".cell")
 		.data(cells)
 		.enter()
