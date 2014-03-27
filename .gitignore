@@ -2,3 +2,4 @@
 *.psd
 _draft/*
 .Rhistory
+.main-min.js
