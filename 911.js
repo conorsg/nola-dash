@@ -4,6 +4,7 @@ var c = 0;
 var fns = [];
 var url = 'https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=timecreate,typetext,type_,timedispatch,timeclosed';
 var data;
+var responses = [];
 
 init();
 
@@ -20,22 +21,21 @@ function init() {
                     pageData(json);
                 });
             } else {
-                transform(data); //call next fn in sequence
-                console.log(data.length)
+                timify(data); //call next fn in sequence
             }
         }) (json);
     });
 }
 
-function transform(data) {
-
+function timify(data) {
     data.forEach(function(d) {
-        if(!d.timedispatch) {
-            data.splice(data.indexOf(d), 1);
-        } else {
-            d.timecreate = new Date(d.timeclosed);
+        if(d.timedispatch) {
+            d.timecreate = new Date(d.timecreate);
             d.timedispatch = new Date(d.timedispatch);
             d.timeclosed = new Date(d.timeclosed);
+            d.timeresponse = (d.timedispatch - d.timecreate);
+
+            responses.push(d);
         }
     });
 }
