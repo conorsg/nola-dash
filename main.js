@@ -7,17 +7,17 @@ var fns 		=	[
 						compareData,
 						drawBar,
 						makeCells,
-						makeChart
+						drawGrid
 					];
 var log			=	d3.select(".log p");
 var url 		= 	'https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=typetext,timecreate,type_';
-var pastUrl 	= 	'http://data.nola.gov/resource/5fn8-vtui.json?disposition=RTF&$select=typetext,timecreate,type_';
+var pastUrl 	= 	'https://data.nola.gov/resource/5fn8-vtui.json?disposition=RTF&$select=typetext,timecreate,type_';
 var typesUrl 	= 	'https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=typetext&$group=typetext';
 var crimeTypes 	=	[];
 var days		=	[];
 var cells		=	[];
-var data;
-var pastData;
+var data 		=	[];
+var pastData 	=	[];
 var nest;
 var pastNest;
 var homicides 	= 	[];
@@ -52,12 +52,24 @@ var colors 		= 	[
 
 queue(fns);
 log.text('> Getting crime categories...');
+logObjects();
 
 // first we make a sequence of calls to get our data, then draw the charts after the data has been retrieved and transformed
 function queue(arr) {
-	console.log(arr[c].name + ":" + c);
 	arr[c]();
 	c++;
+}
+
+function logObjects() {
+	if(!data.done || !pastData.done) {
+		d3.select('.log .object-count').text( '(' + (data.length + pastData.length) + ' data objects retrieved)');
+		setTimeout(function() {
+			logObjects();
+		},100)
+	} else { 
+		d3.select('.log .object-count').text( '(' + (data.length + pastData.length) + ' data objects retrieved)');
+		return false;
+	}
 }
 
 // retrieve 2014 crime types
@@ -365,7 +377,7 @@ function makeCells(){
 }
 
 // make the heat grid
-function makeChart() {
+function drawGrid() {
 
 	d3.select("#heat-grid h2").text("All crimes reported to NOPD, 2014:");
 
@@ -381,7 +393,7 @@ function makeChart() {
 		.data(nest);
 
 	var rowLabels = svg.append("g")
-		.attr("transform", "translate(200,60)")
+		.attr("transform", "translate(200,100)")
 		.attr("class", "rowLabels")
 		.selectAll(".rowLabel")
 		.data(crimeTypes)
@@ -394,7 +406,7 @@ function makeChart() {
 		.attr("y", function(d,i) { return (i+1) * cellSize });
 
 	var colLabels = svg.append("g")
-		.attr("transform", "translate(198,60)")
+		.attr("transform", "translate(198,100)")
 		.attr("class", "colLabels")
 		.selectAll(".colLabel")
 		.data(nest)
@@ -407,7 +419,7 @@ function makeChart() {
 		.attr("transform", "rotate(-90)");
 
 	var vertGrid = svg.append("g")
-		.attr("transform", "translate(200,60)")
+		.attr("transform", "translate(200,100)")
 		.attr("class", "vert-grid")
 		.selectAll(".vert-grid")
 		.data(days)
@@ -420,7 +432,7 @@ function makeChart() {
 		.attr("stroke", "#eee");
 
 	var horzGrid = svg.append("g")
-		.attr("transform", "translate(200,60)")
+		.attr("transform", "translate(200,100)")
 		.attr("class", "horz-grid")
 		.selectAll(".horz-grid")
 		.data(crimeTypes)
@@ -438,7 +450,7 @@ function makeChart() {
 
 	var heatMap = svg.append("g")
 		.attr("class", "cells")
-		.attr("transform", "translate(202,60)")
+		.attr("transform", "translate(202,100)")
 		.selectAll(".cell")
 		.data(cells)
 		.enter()
