@@ -50,14 +50,15 @@ function makeChartData() {
     responses.forEach(function(r) {
         //data points for response time frequencies by date
         freqDate.push({
-            key: months[r.timecreate.getMonth()] + " " + r.timecreate.getDate().toString(),
-            value: r.timeresponse
+            date: months[r.timecreate.getMonth()] + " " + r.timecreate.getDate().toString(),
+            response: r.timeresponse,
+            type: r.type_
         });
     });
 
     freqTime = d3.nest()
-                    .key(function(d) { return d.timeint })
-                    .entries(responses)
+                .key(function(d) { return d.timeint })
+                .entries(responses)
 
     for(f in freqTime) {
         freqTime[f].values = freqTime[f].values.length
