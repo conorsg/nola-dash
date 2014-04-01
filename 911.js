@@ -59,7 +59,6 @@ function makeChartData() {
                     .key(function(d) { return d.timeint })
                     .entries(responses)
 
-
     for(f in freqTime) {
         freqTime[f].values = freqTime[f].values.length
     }
