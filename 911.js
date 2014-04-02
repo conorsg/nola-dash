@@ -84,9 +84,8 @@ function makeChartData() {
             if( type == t) { result = "gun"; }
         });
 
-        if(!result) {
-            result = "other";
-        }
+        if(!result) { result = "other"; }
+        
         return result;
     }
 }
