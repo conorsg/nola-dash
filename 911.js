@@ -1,9 +1,12 @@
 // Distribution of 911 call response times
 
-var c = 0;
-var fns = [];
 var months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
 var url = 'https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=timecreate,typetext,type_,timedispatch,timeclosed';
+var property = ["67P", "55", "67F", "67A", "67", "56", "62", "67S", "62C", "62R", "67B", "56D", "62B", "65", "67E", "67C", "65P", "60", "65J"];
+var violent = ["35D", "64G", "35", "34", "34S", "37", "34D", "34C", "37D", "38D"];
+var homicide = ["30", "30S", "30C", "30D"];
+var rape = ["42", "43"];
+var gun = ["64G", "94", "95", "95G"];
 var data;
 var responses = [];
 var freqDate = [];
@@ -38,7 +41,7 @@ function timify(data) {
             d.timeclosed = new Date(d.timeclosed);
 
             d.timeresponse = (d.timedispatch - d.timecreate);
-            d.timeint = 0.5 * Math.round( (d.timeresponse/6000)/0.5 ) // rounded to the nearest half minute
+            d.timeint = 0.5 * Math.round( (d.timeresponse/60000)/0.5 ) // rounded to the nearest half minute
 
             responses.push(d);
         }
@@ -52,15 +55,38 @@ function makeChartData() {
         freqDate.push({
             date: months[r.timecreate.getMonth()] + " " + r.timecreate.getDate().toString(),
             response: r.timeresponse,
-            type: r.type_
+            type: r.type_,
+            cat: categorize(r.type_)
         });
     });
-
+    //datapoints for frequency of response times by half minute intervals
     freqTime = d3.nest()
                 .key(function(d) { return d.timeint })
                 .entries(responses)
 
-    for(f in freqTime) {
-        freqTime[f].values = freqTime[f].values.length
+    //categorizes types of crimes
+    function categorize(type) {
+        var result;
+
+        property.forEach(function(t) {
+            if( type == t) { result = "property"; }
+        });
+        violent.forEach(function(t) {
+            if( type == t) { result = "violent"; }
+        });
+        rape.forEach(function(t) {
+            if( type == t) { result = "rape"; }
+        });
+        homicide.forEach(function(t) {
+            if( type == t) { result = "homicide"; }
+        });
+        gun.forEach(function(t) {
+            if( type == t) { result = "gun"; }
+        });
+
+        if(!result) {
+            result = "other";
+        }
+        return result;
     }
 }
