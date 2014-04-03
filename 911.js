@@ -55,6 +55,7 @@ function makeChartData() {
         //data points for response time frequencies by date
         freqDate.push({
             date: months[r.timecreate.getMonth()] + " " + r.timecreate.getDate().toString(),
+            timecreate: r.timecreate,
             response: r.timeresponse,
             type: r.type_,
             cat: categorize(r.type_)
@@ -139,30 +140,41 @@ function makeChartData() {
     }
 }
 
+
 function makeDateChart() {
 
-    var days = d3.nest().key(function(d) { return d.date }).entries(freqDate);
+    // var daysNest = d3.nest().key(function(d) { return d.date }).entries(freqDate);
+    // var days = [];
+    // daysNest.forEach(function(d) { days.push(d.key); });
 
     var height = 600;
     var width = 960;
-    var bandWidth = width/days.length //FIXME: hack for horizontal scale
+    var margin = { top: 50, right: 20, bottom: 50, left: 20 };
 
     var svg = d3.select("#date-chart").append("svg")
-                .attr("width", width)
-                .attr("height", height)
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
                 .data(freqDate);
 
-    var xLabels = svg.append("g")
-                    .attr("width", width)
-                    .attr("height", 100)
-                    .attr("class", "x-labels")
-                    .selectAll("x-label")
-                    .data(days)
-                    .enter()
-                    .append("text")
-                    .text(function(d) { return d.key })
-                    .attr("x", 0)
-                    .attr("y", function(d,i) { return (i * bandWidth) })
-                    .attr("class", "label")
-                    .attr("transform", "rotate(-90)");
+    var x = d3.time.scale()
+            .domain([freqDate[0].timecreate, freqDate[freqDate.length -1].timecreate])
+            .nice(5)
+            .rangeRound([0, width]);
+
+    var y = d3.scale.linear()
+            .range([height, 0]);
+
+    var xAxis = d3.svg.axis()
+                .scale(x)
+                .orient("bottom");
+
+    var yAxis = d3.svg.axis()
+                .scale(y)
+                .orient("left");
+
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0, " + height + ")")
+        .call(xAxis)
+        .attr("class", "label");
 }
