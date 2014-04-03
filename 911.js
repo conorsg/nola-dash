@@ -138,3 +138,31 @@ function makeChartData() {
         return counts;
     }
 }
+
+function makeDateChart() {
+
+    var days = d3.nest().key(function(d) { return d.date }).entries(freqDate);
+
+    var height = 600;
+    var width = 960;
+    var bandWidth = width/days.length //FIXME: hack for horizontal scale
+
+    var svg = d3.select("#date-chart").append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .data(freqDate);
+
+    var xLabels = svg.append("g")
+                    .attr("width", width)
+                    .attr("height", 100)
+                    .attr("class", "x-labels")
+                    .selectAll("x-label")
+                    .data(days)
+                    .enter()
+                    .append("text")
+                    .text(function(d) { return d.key })
+                    .attr("x", 0)
+                    .attr("y", function(d,i) { return (i * bandWidth) })
+                    .attr("class", "label")
+                    .attr("transform", "rotate(-90)");
+}
