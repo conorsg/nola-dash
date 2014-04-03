@@ -139,6 +139,28 @@ function makeChartData() {
 
         return counts;
     }
+    // remove outliers and negative dispatch times
+    function clean(data) {
+        var cleaned;
+        var range = [];
+
+        data.forEach(function(d) {
+            range.push(d.int);
+        });
+        range.sort(function(a,b) { return (a-b) });
+        cutoff = d3.quantile(range, 0.99) //FIXME: this exlcudes the 99th percentile, kind of arbitrarily
+
+        for(var i = data.length -1; i >= 0 ; i--){
+            if(data[i].int < 0 || data[i].int > cutoff ){
+                data.splice(i, 1);
+            }
+        }
+        
+        data = cleaned;
+    }
+
+clean(freqTime);
+clean(freqDate);
 makeDateChart();
 }
 
@@ -185,4 +207,13 @@ function makeDateChart() {
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         .call(yAxis)
         .attr("class", "y axis");
+
+    svg.selectAll(".point")
+        .data(freqDate)
+        .enter()
+        .append("circle")
+        .attr("class", "point")
+        .attr("r", 3)
+        .attr("cx", function(d) { return x(d.timecreate) })
+        .attr("cy", function(d) { return y(d.int) });
 }
