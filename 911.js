@@ -57,6 +57,7 @@ function makeChartData() {
             date: months[r.timecreate.getMonth()] + " " + r.timecreate.getDate().toString(),
             timecreate: r.timecreate,
             response: r.timeresponse,
+            int: r.timeint,
             type: r.type_,
             cat: categorize(r.type_)
         });
@@ -138,6 +139,7 @@ function makeChartData() {
 
         return counts;
     }
+makeDateChart();
 }
 
 
@@ -149,7 +151,7 @@ function makeDateChart() {
 
     var height = 600;
     var width = 960;
-    var margin = { top: 50, right: 20, bottom: 50, left: 20 };
+    var margin = { top: 50, right: 0, bottom: 50, left: 50 };
 
     var svg = d3.select("#date-chart").append("svg")
                 .attr("width", width + margin.left + margin.right)
@@ -162,7 +164,9 @@ function makeDateChart() {
             .rangeRound([0, width]);
 
     var y = d3.scale.linear()
-            .range([height, 0]);
+            .domain([d3.min(freqDate, function(d) { return d.int }), d3.max(freqDate, function(d) { return d.int })])
+            .nice(5)
+            .rangeRound([height, 0]);
 
     var xAxis = d3.svg.axis()
                 .scale(x)
@@ -173,8 +177,12 @@ function makeDateChart() {
                 .orient("left");
 
     svg.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0, " + height + ")")
+        .attr("transform", "translate(" + margin.left + "," + (height + margin.top) + ")")
         .call(xAxis)
-        .attr("class", "label");
+        .attr("class", "x axis");
+
+    svg.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        .call(yAxis)
+        .attr("class", "y axis");
 }
