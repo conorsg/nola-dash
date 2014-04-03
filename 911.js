@@ -1,7 +1,7 @@
 // Distribution of 911 call response times
 
 var months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
-var url = 'https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=timecreate,typetext,type_,timedispatch,timeclosed';
+var url = "https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=timecreate,typetext,type_,timedispatch,timeclosed";
 var property = ["67P", "55", "67F", "67A", "67", "56", "62", "67S", "62C", "62R", "67B", "56D", "62B", "65", "67E", "67C", "65P", "60", "65J"];
 var violent = ["35D", "64G", "35", "34", "34S", "37", "34D", "34C", "37D", "38D"];
 var homicide = ["30", "30S", "30C", "30D"];
@@ -10,6 +10,7 @@ var gun = ["64G", "94", "95", "95G"];
 var data;
 var responses = [];
 var freqDate = [];
+var intNest = [];
 var freqTime = [];
 
 init();
@@ -59,10 +60,25 @@ function makeChartData() {
             cat: categorize(r.type_)
         });
     });
-    //datapoints for frequency of response times by half minute intervals
-    freqTime = d3.nest()
+    // master nested object for reponse time interval series
+    intNest = d3.nest()
                 .key(function(d) { return d.timeint })
                 .entries(responses)
+
+    intNest.forEach(function(n) {
+
+        counts = count(n.values);
+
+        freqTime.push({
+            int: n.key,
+            property: counts.property,
+            violent: counts.violent,
+            rape: counts.rape,
+            homicide: counts.homicide,
+            gun: counts.gun,
+            other: counts.other
+        });
+    });
 
     //categorizes types of crimes
     function categorize(type) {
@@ -85,7 +101,40 @@ function makeChartData() {
         });
 
         if(!result) { result = "other"; }
-        
+
         return result;
+    }
+
+    // count types of crimes by categories
+    function count(array) {
+        var counts = {
+            property: 0,
+            violent: 0,
+            rape: 0,
+            homicide: 0,
+            gun: 0,
+            other: 0
+        };
+        array.forEach(function(a) {
+            property.forEach(function(t) {
+                    if(a.type_ == t) { counts.property++; }
+            });
+            violent.forEach(function(t) {
+                    if(a.type_ == t) { counts.violent++; }
+            });
+            rape.forEach(function(t) {
+                    if(a.type_ == t) { counts.rape++; }
+            });
+            homicide.forEach(function(t) {
+                    if(a.type_ == t) { counts.homicide++; }
+            });
+            gun.forEach(function(t) {
+                    if(a.type_ == t) { counts.gun++; }
+            });
+        });
+
+        counts.other = array.length - (counts.property + counts.violent + counts.rape + counts.homicide + counts.gun);
+
+        return counts;
     }
 }
