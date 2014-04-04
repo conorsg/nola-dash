@@ -205,7 +205,13 @@ function makeDateChart() {
     svg.append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         .call(yAxis)
-        .attr("class", "y axis");
+        .attr("class", "y axis")
+        .append("text")
+        .attr("class", "title")
+        .text("Minutes to dispatch")
+        .attr("transform", "rotate(-90)")
+        .attr("dy", "-" + (margin.left - 10) + "")
+        .attr("dx", "-" + (height + margin.top + margin.bottom)/2 + "");
 
     svg.append("g")
         .attr("class", "points")
