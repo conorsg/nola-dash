@@ -3,3 +3,37 @@
     stroke: #4A4A4A;
     shape-rendering: crispEdges;
 }
+
+.points circle {
+    opacity: 0.6;
+}
+
+circle.property {
+    stroke: #A68900;
+    fill: #BFA730;
+}
+
+circle.violent {
+    stroke: #48036F;
+    fill: #5F2590;
+}
+
+circle.rape {
+    stroke:#A62000;
+    fill: #BF4B30;
+}
+
+circle.gun {
+    stroke: #439400;
+    fill: #64AA2B;
+}
+
+circle.homicide {
+    stroke: #A60000;
+    fill: #FF4040;
+}
+
+circle.other {
+    stroke: #033E6B;
+    fill: #25567B;
+}

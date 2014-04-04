@@ -155,7 +155,7 @@ function makeChartData() {
                 data.splice(i, 1);
             }
         }
-        
+
         data = cleaned;
     }
 
@@ -182,7 +182,7 @@ function makeDateChart() {
 
     var x = d3.time.scale()
             .domain([freqDate[0].timecreate, freqDate[freqDate.length -1].timecreate])
-            .nice(5)
+            .nice(2)
             .rangeRound([0, width]);
 
     var y = d3.scale.linear()
@@ -208,11 +208,14 @@ function makeDateChart() {
         .call(yAxis)
         .attr("class", "y axis");
 
-    svg.selectAll(".point")
+    svg.append("g")
+        .attr("class", "points")
+        .attr("transform", "translate(" + (margin.left + 3) + "," + (margin.top - 3) + ")")
+        .selectAll(".point")
         .data(freqDate)
         .enter()
         .append("circle")
-        .attr("class", "point")
+        .attr("class", function(d) { return d.cat })
         .attr("r", 3)
         .attr("cx", function(d) { return x(d.timecreate) })
         .attr("cy", function(d) { return y(d.int) });
