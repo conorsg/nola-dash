@@ -182,7 +182,6 @@ function makeDateChart() {
 
     var x = d3.time.scale()
             .domain([freqDate[0].timecreate, freqDate[freqDate.length -1].timecreate])
-            .nice(2)
             .rangeRound([0, width]);
 
     var y = d3.scale.linear()
