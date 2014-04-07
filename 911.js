@@ -52,15 +52,17 @@ function timify(data) {
 
 function makeChartData() {
     responses.forEach(function(r) {
-        //data points for response time frequencies by date
-        freqDate.push({
-            date: months[r.timecreate.getMonth()] + " " + r.timecreate.getDate().toString(),
-            timecreate: r.timecreate,
-            response: r.timeresponse,
-            int: r.timeint,
-            type: r.type_,
-            cat: categorize(r.type_)
-        });
+        //data points for response time frequencies by date, excluding points that have a 0 ms response time
+        if(r.timeresponse > 0) {
+            freqDate.push({
+                date: months[r.timecreate.getMonth()] + " " + r.timecreate.getDate().toString(),
+                timecreate: r.timecreate,
+                response: r.timeresponse,
+                int: r.timeint,
+                type: r.type_,
+                cat: categorize(r.type_)
+            });
+        }
     });
     // master nested object for reponse time interval series
     intNest = d3.nest()
@@ -139,7 +141,7 @@ function makeChartData() {
 
         return counts;
     }
-    // remove outliers and negative dispatch times
+    // remove outliers and negative dispatch times on interval properties
     function clean(data) {
         var cleaned;
         var range = [];
@@ -184,8 +186,8 @@ function makeDateChart() {
             .domain([freqDate[0].timecreate, freqDate[freqDate.length -1].timecreate])
             .rangeRound([0, width]);
 
-    var y = d3.scale.linear()
-            .domain([d3.min(freqDate, function(d) { return d.int }), d3.max(freqDate, function(d) { return d.int })])
+    var y = d3.scale.log()
+            .domain([d3.min(freqDate, function(d) { return d.response }), d3.max(freqDate, function(d) { return d.response })])
             .nice(5)
             .rangeRound([height, 0]);
 
@@ -223,5 +225,5 @@ function makeDateChart() {
         .attr("class", function(d) { return d.cat })
         .attr("r", 3)
         .attr("cx", function(d) { return x(d.timecreate) })
-        .attr("cy", function(d) { return y(d.int) });
+        .attr("cy", function(d) { return y(d.response) });
 }
