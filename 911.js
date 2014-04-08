@@ -191,6 +191,10 @@ function makeDateChart() {
             .rangeRound([height, 0])
             .nice(1);
 
+    var formatCount = d3.format(",.0f"),
+        formatTime = d3.time.format("%X"),
+        formatMinutes = function(d) { return formatTime(new Date(2012, 0, 1, 0, d)); };
+
     var xAxis = d3.svg.axis()
                 .scale(x)
                 .orient("bottom");
@@ -198,7 +202,8 @@ function makeDateChart() {
     var yAxis = d3.svg.axis()
                 .scale(y)
                 .orient("left")
-                .ticks(3, "g");
+                .ticks(1)
+                .tickFormat(formatMinutes);
 
     svg.append("g")
         .attr("transform", "translate(" + margin.left + "," + (height + margin.top) + ")")
@@ -211,7 +216,7 @@ function makeDateChart() {
         .attr("class", "y axis")
         .append("text")
         .attr("class", "title")
-        .text("Seconds to dispatch")
+        .text("Time to dispatch (in minutes)")
         .attr("transform", "rotate(-90)")
         .attr("dy", "-" + (margin.left - 10) + "")
         .attr("dx", "-" + (height + margin.top + margin.bottom)/2 + "");
