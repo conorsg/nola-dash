@@ -10,6 +10,7 @@ var gun = ["64G", "94", "95", "95G"];
 var data;
 var responses = [];
 var freqDate = [];
+var lines = [];
 var intNest = [];
 var freqTime = [];
 
@@ -64,6 +65,35 @@ function makeChartData() {
             });
         }
     });
+
+    // calculate median and 95th percentile for response times for all dispatches for each day
+    dateQ = d3.nest()
+            .key(function(d) { return d.date })
+            .entries(freqDate);
+
+    dateQ.forEach(function(d) {
+        var range = [];
+        d.values.forEach(function(v) {
+            range.push(v.response);
+        });
+        range.sort(function(a,b) { return (a-b) });
+
+        lines.push({
+            name: "median",
+            values: {
+                date: d.key,
+                value: d3.quantile(range, .5)
+                }
+        },
+        {
+            name: "top-percentile",
+            values: {
+                date: d.key,
+                value: d3.quantile(range, .95)
+                }
+        });
+    });
+
     // master nested object for reponse time interval series
     intNest = d3.nest()
                 .key(function(d) { return d.timeint })
@@ -174,8 +204,8 @@ function makeDateChart() {
     // daysNest.forEach(function(d) { days.push(d.key); });
 
     var height = 600;
-    var width = 960;
-    var margin = { top: 50, right: 0, bottom: 50, left: 50 };
+    var width = 900;
+    var margin = { top: 50, right: 20, bottom: 50, left: 80 };
 
     var svg = d3.select("#date-chart").append("svg")
                 .attr("width", width + margin.left + margin.right)
@@ -184,6 +214,7 @@ function makeDateChart() {
 
     var x = d3.time.scale()
             .domain([freqDate[0].timecreate, freqDate[freqDate.length -1].timecreate])
+            .nice(30)
             .rangeRound([0, width]);
 
     var y = d3.scale.log()
@@ -204,6 +235,11 @@ function makeDateChart() {
                 .orient("left")
                 .ticks(2, formatMinutes);
 
+    var line = d3.svg.line()
+                .interpolate("basis")
+                .x(function(d) { return x(d.date); })
+                .y(function(d) { return y(d.value); });
+
     svg.append("g")
         .attr("transform", "translate(" + margin.left + "," + (height + margin.top) + ")")
         .call(xAxis)
@@ -215,7 +251,7 @@ function makeDateChart() {
         .attr("class", "y axis")
         .append("text")
         .attr("class", "title")
-        .text("Time to dispatch (HH: MM)")
+        .text("Time to dispatch (HH: MM: SS)")
         .attr("transform", "rotate(-90)")
         .attr("dy", "-" + (margin.left - 10) + "")
         .attr("dx", "-" + (height + margin.top + margin.bottom)/2 + "");
@@ -231,4 +267,9 @@ function makeDateChart() {
         .attr("r", 3)
         .attr("cx", function(d) { return x(d.timecreate) })
         .attr("cy", function(d) { return y(d.response) });
+
+    svg.append("path")
+        .datum(lines)
+        .attr("class", "line")
+        .attr("d", function(d) { return line(d.values) });
 }
