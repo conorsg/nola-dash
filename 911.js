@@ -42,7 +42,7 @@ function timify(data) {
             d.timeclosed = new Date(d.timeclosed);
 
             d.timeresponse = (d.timedispatch - d.timecreate);
-            d.timeint = 0.5 * Math.round( (d.timeresponse/60000)/0.5 ) // rounded to the nearest half minute
+            d.timeint = 0.5 * Math.round( (d.timeresponse/60000)/0.5 ); // rounded to the nearest half minute
 
             responses.push(d);
         }
@@ -57,7 +57,7 @@ function makeChartData() {
             freqDate.push({
                 date: months[r.timecreate.getMonth()] + " " + r.timecreate.getDate().toString(),
                 timecreate: r.timecreate,
-                response: (r.timeresponse/1000),
+                response: (r.timeresponse/1000), // convert milliseconds to seconds
                 int: r.timeint,
                 type: r.type_,
                 cat: categorize(r.type_)
@@ -147,13 +147,13 @@ function makeChartData() {
         var range = [];
 
         data.forEach(function(d) {
-            range.push(d.int);
+            range.push(d.response);
         });
         range.sort(function(a,b) { return (a-b) });
         cutoff = d3.quantile(range, 0.99) //FIXME: this exlcudes the 99th percentile, kind of arbitrarily
 
         for(var i = data.length -1; i >= 0 ; i--){
-            if(data[i].int < 0 || data[i].int > cutoff ){
+            if(data[i].response < 0 || data[i].response > cutoff ){
                 data.splice(i, 1);
             }
         }
@@ -192,8 +192,8 @@ function makeDateChart() {
             .nice(1);
 
     var formatCount = d3.format(",.0f"),
-        formatTime = d3.time.format("%X"),
-        formatMinutes = function(d) { return formatTime(new Date(2012, 0, 1, 0, d)); };
+        formatTime = d3.time.format("%H: %M: %S"),
+        formatMinutes = function(d) { return formatTime(new Date(2012, 0, 1, 0, 0, d)); };
 
     var xAxis = d3.svg.axis()
                 .scale(x)
@@ -202,8 +202,7 @@ function makeDateChart() {
     var yAxis = d3.svg.axis()
                 .scale(y)
                 .orient("left")
-                .ticks(1)
-                .tickFormat(formatMinutes);
+                .ticks(2, formatMinutes);
 
     svg.append("g")
         .attr("transform", "translate(" + margin.left + "," + (height + margin.top) + ")")
@@ -216,7 +215,7 @@ function makeDateChart() {
         .attr("class", "y axis")
         .append("text")
         .attr("class", "title")
-        .text("Time to dispatch (in minutes)")
+        .text("Time to dispatch (HH: MM)")
         .attr("transform", "rotate(-90)")
         .attr("dy", "-" + (margin.left - 10) + "")
         .attr("dx", "-" + (height + margin.top + margin.bottom)/2 + "");
