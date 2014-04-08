@@ -57,7 +57,7 @@ function makeChartData() {
             freqDate.push({
                 date: months[r.timecreate.getMonth()] + " " + r.timecreate.getDate().toString(),
                 timecreate: r.timecreate,
-                response: r.timeresponse,
+                response: (r.timeresponse/1000),
                 int: r.timeint,
                 type: r.type_,
                 cat: categorize(r.type_)
@@ -188,8 +188,8 @@ function makeDateChart() {
 
     var y = d3.scale.log()
             .domain([d3.min(freqDate, function(d) { return d.response }), d3.max(freqDate, function(d) { return d.response })])
-            .nice(5)
-            .rangeRound([height, 0]);
+            .rangeRound([height, 0])
+            .nice(1);
 
     var xAxis = d3.svg.axis()
                 .scale(x)
@@ -197,7 +197,8 @@ function makeDateChart() {
 
     var yAxis = d3.svg.axis()
                 .scale(y)
-                .orient("left");
+                .orient("left")
+                .ticks(3, "g");
 
     svg.append("g")
         .attr("transform", "translate(" + margin.left + "," + (height + margin.top) + ")")
@@ -210,7 +211,7 @@ function makeDateChart() {
         .attr("class", "y axis")
         .append("text")
         .attr("class", "title")
-        .text("Minutes to dispatch")
+        .text("Seconds to dispatch")
         .attr("transform", "rotate(-90)")
         .attr("dy", "-" + (margin.left - 10) + "")
         .attr("dx", "-" + (height + margin.top + margin.bottom)/2 + "");
