@@ -80,19 +80,17 @@ function makeChartData() {
 
         lines.push({
             name: "median",
-            values: {
-                date: d.key,
-                value: d3.quantile(range, .5)
-                }
+            date: new Date(d.key + " 2014"),
+            value: d3.quantile(range, .5)
         },
         {
             name: "top-percentile",
-            values: {
-                date: d.key,
-                value: d3.quantile(range, .95)
-                }
+            date: new Date(d.key + " 2014"),
+            value: d3.quantile(range, .95)
         });
     });
+
+    lines = d3.nest().key(function(d) { return d.name }).entries(lines);
 
     // master nested object for reponse time interval series
     intNest = d3.nest()
@@ -219,12 +217,10 @@ function makeDateChart() {
 
     var y = d3.scale.log()
             .domain([d3.min(freqDate, function(d) { return d.response }), d3.max(freqDate, function(d) { return d.response })])
-            .rangeRound([height, 0])
-            .nice(1);
+            .rangeRound([height, 0]);
 
-    var formatCount = d3.format(",.0f"),
-        formatTime = d3.time.format("%H: %M: %S"),
-        formatMinutes = function(d) { return formatTime(new Date(2012, 0, 1, 0, 0, d)); };
+    var formatTime = d3.time.format("%X"),
+        formatMinutes = function(d) { return formatTime(new Date(2014, 1, 0, 0, 0, d)); };
 
     var xAxis = d3.svg.axis()
                 .scale(x)
@@ -233,12 +229,14 @@ function makeDateChart() {
     var yAxis = d3.svg.axis()
                 .scale(y)
                 .orient("left")
-                .ticks(2, formatMinutes);
+                .tickFormat(formatMinutes);
 
     var line = d3.svg.line()
                 .interpolate("basis")
                 .x(function(d) { return x(d.date); })
                 .y(function(d) { return y(d.value); });
+
+    var color = d3.scale.category20();
 
     svg.append("g")
         .attr("transform", "translate(" + margin.left + "," + (height + margin.top) + ")")
@@ -268,8 +266,13 @@ function makeDateChart() {
         .attr("cx", function(d) { return x(d.timecreate) })
         .attr("cy", function(d) { return y(d.response) });
 
-    svg.append("path")
-        .datum(lines)
-        .attr("class", "line")
-        .attr("d", function(d) { return line(d.values) });
+    var qLines = svg.selectAll(".line")
+                .data(lines)
+                .enter()
+                .append("g")
+                .attr("transform", "translate(" + (margin.left + 3) + "," + (margin.top - 3) + ")")
+                .attr("class", "line")
+                .append("path")
+                .attr("class", function(d) { return d.key; })
+                .attr("d", function(d) { return line(d.values); });
 }
