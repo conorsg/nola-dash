@@ -191,20 +191,77 @@ function makeChartData() {
 clean(freqTime);
 clean(freqDate);
 makeDateChart();
+makeDateLine();
 }
 
 
 function makeDateChart() {
-
-    // var daysNest = d3.nest().key(function(d) { return d.date }).entries(freqDate);
-    // var days = [];
-    // daysNest.forEach(function(d) { days.push(d.key); });
 
     var height = 600;
     var width = 900;
     var margin = { top: 50, right: 20, bottom: 50, left: 80 };
 
     var svg = d3.select("#date-chart").append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .data(freqDate);
+
+    var x = d3.time.scale()
+            .domain([freqDate[0].timecreate, freqDate[freqDate.length -1].timecreate])
+            .nice(30)
+            .rangeRound([0, width]);
+
+    var y = d3.scale.log()
+            .domain([d3.min(freqDate, function(d) { return d.response }), d3.max(freqDate, function(d) { return d.response })])
+            .rangeRound([height, 0]);
+
+    var formatTime = d3.time.format("%X"),
+        formatMinutes = function(d) { return formatTime(new Date(2014, 1, 0, 0, 0, d)); };
+
+    var xAxis = d3.svg.axis()
+                .scale(x)
+                .orient("bottom");
+
+    var yAxis = d3.svg.axis()
+                .scale(y)
+                .orient("left")
+                .tickFormat(formatMinutes);
+
+    svg.append("g")
+        .attr("transform", "translate(" + margin.left + "," + (height + margin.top) + ")")
+        .call(xAxis)
+        .attr("class", "x axis");
+
+    svg.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        .call(yAxis)
+        .attr("class", "y axis")
+        .append("text")
+        .attr("class", "title")
+        .text("Time to dispatch (HH: MM: SS)")
+        .attr("transform", "rotate(-90)")
+        .attr("dy", "-" + (margin.left - 10) + "")
+        .attr("dx", "-" + (height + margin.top + margin.bottom)/2 + "");
+
+    svg.append("g")
+        .attr("class", "points")
+        .attr("transform", "translate(" + (margin.left + 3) + "," + (margin.top - 3) + ")")
+        .selectAll(".point")
+        .data(freqDate)
+        .enter()
+        .append("circle")
+        .attr("class", function(d) { return d.cat })
+        .attr("r", 3)
+        .attr("cx", function(d) { return x(d.timecreate) })
+        .attr("cy", function(d) { return y(d.response) });
+}
+
+function makeDateLine() {
+    var height = 600;
+    var width = 900;
+    var margin = { top: 50, right: 20, bottom: 50, left: 80 };
+
+    var svg = d3.select("#date-chart-line").append("svg")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
                 .data(freqDate);
@@ -253,18 +310,6 @@ function makeDateChart() {
         .attr("dy", "-" + (margin.left - 10) + "")
         .attr("dx", "-" + (height + margin.top + margin.bottom)/2 + "");
 
-    svg.append("g")
-        .attr("class", "points")
-        .attr("transform", "translate(" + (margin.left + 3) + "," + (margin.top - 3) + ")")
-        .selectAll(".point")
-        .data(freqDate)
-        .enter()
-        .append("circle")
-        .attr("class", function(d) { return d.cat })
-        .attr("r", 3)
-        .attr("cx", function(d) { return x(d.timecreate) })
-        .attr("cy", function(d) { return y(d.response) });
-
     var qLines = svg.selectAll(".line")
                 .data(lines)
                 .enter()
@@ -273,5 +318,6 @@ function makeDateChart() {
                 .attr("class", "line")
                 .append("path")
                 .attr("class", function(d) { return d.key; })
-                .attr("d", function(d) { return line(d.values); });
+                .attr("d", function(d) { return line(d.values); })
+                .style("stroke", function(d) { return color(d.key); });
 }

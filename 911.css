@@ -18,14 +18,6 @@
     stroke-width: 3px;
 }
 
-.line .median {
-    stroke: #FF9700;
-}
-
-.line .top-percentile {
-    stroke: #FF5300;
-}
-
 circle.property {
     stroke: #A68900;
     fill: #BFA730;
@@ -52,6 +44,6 @@ circle.homicide {
 }
 
 circle.other {
-    stroke: #033E6B;
-    fill: #25567B;
+    stroke: #C1C1AF;
+    fill: #DADAC8;
 }
