@@ -261,7 +261,8 @@ function makeDateLine() {
     var width = 900;
     var margin = { top: 50, right: 20, bottom: 50, left: 80 };
 
-    var svg = d3.select("#date-chart-line").append("svg")
+    var svg = d3.select("#date-chart-line")
+                .append("svg")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
                 .data(freqDate);
@@ -294,6 +295,22 @@ function makeDateLine() {
 
     var color = d3.scale.category20();
 
+    function tooltip(x) {
+        //destroy old line
+        d3.select(".guideline").remove();
+        //draw new line
+        //wait half second to draw tooltip box
+
+        var guideline = d3.select("#date-chart-line svg")
+                        .append("line")
+                        .attr("class", "guideline")
+                        .attr("x1", x)
+                        .attr("x2", x)
+                        .attr("y1", height + margin.top)
+                        .attr("y2", 0)
+                        .style("stroke", "grey");
+    }
+
     svg.append("g")
         .attr("transform", "translate(" + margin.left + "," + (height + margin.top) + ")")
         .call(xAxis)
@@ -320,4 +337,6 @@ function makeDateLine() {
                 .attr("class", function(d) { return d.key; })
                 .attr("d", function(d) { return line(d.values); })
                 .style("stroke", function(d) { return color(d.key); });
+
+    svg.on("mousemove", function(d) { tooltip(d3.mouse(this)[0]); })
 }
