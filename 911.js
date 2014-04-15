@@ -185,7 +185,6 @@ function makeChartData() {
                 data.splice(i, 1);
             }
         }
-
         data = cleaned;
     }
 
