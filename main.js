@@ -29,7 +29,7 @@ var propCrimes 	= 	{
 var viCrimes 	= 	{
 						types: ["38", "38D", "34S", "35D", "35", "43B", "42", "43", "30S", "37", "37D", "64K", "64J", "64G", "64" ],
 						old: 0,
-						now: 0 
+						now: 0
 					};
 var rapes 		= 	{
 						types: ["42", "43"],
@@ -66,7 +66,7 @@ function logObjects() {
 		setTimeout(function() {
 			logObjects();
 		},100)
-	} else { 
+	} else {
 		d3.select('.log .object-count').text( '(' + (data.length + pastData.length) + ' data objects retrieved)');
 		return false;
 	}
@@ -102,7 +102,7 @@ function getNewData() {
 				log.text('> Fetching 2013 data...');
 				data.done = true;
 			}
-		}) (json);	
+		}) (json);
 	});
 }
 
@@ -124,8 +124,8 @@ function getOldData() {
 				log.text('> Transforming data...');
 				pastData.done = true;
 			}
-		}) (json);	
-	});	
+		}) (json);
+	});
 }
 
 // now we transform the data to be more manipulable and writeable for charts
@@ -202,7 +202,7 @@ function compareData() {
 				});
 				if( isNaN(count) ) { return 0; } else { return count; } // check for undefined values which get returned if the crime is not in the data
 			}
-			
+
 			crimes.old = crimes.old + getCount(crime, pastTypeNestDelim);
 			crimes.now = crimes.now + getCount(crime, typeNest);
 		}
@@ -384,8 +384,8 @@ function drawGrid() {
 	var cellSize 	=	12;
 	var rowNum 		= 	crimeTypes.length;
 	var colNum 		= 	days.length
-	var width 		= 	cellSize * colNum + 200;
-	var height 		= 	cellSize * rowNum + 66;
+	var width 		= 	cellSize * rowNum + 66;
+	var height 		= 	cellSize * colNum + 200;
 
 	var svg = d3.select('#heat-grid').append("svg")
 		.attr("width", width)
@@ -393,36 +393,36 @@ function drawGrid() {
 		.data(nest);
 
 	var rowLabels = svg.append("g")
-		.attr("transform", "translate(200,100)")
+		.attr("transform", "translate(50,200)")
 		.attr("class", "rowLabels")
 		.selectAll(".rowLabel")
-		.data(crimeTypes)
-		.enter()
-		.append("text")
-		.text(function(d) { return d })
-		.style("text-anchor","end")
-		.attr("class", "graph-label")
-		.attr("x", 0)
-		.attr("y", function(d,i) { return (i+1) * cellSize });
-
-	var colLabels = svg.append("g")
-		.attr("transform", "translate(198,100)")
-		.attr("class", "colLabels")
-		.selectAll(".colLabel")
 		.data(nest)
 		.enter()
 		.append("text")
 		.text(function(d) { return new Date(d.key).toDateString() })
-		.attr("y", function(d,i) { return (i+1) * cellSize })
 		.attr("x", 0)
+		.attr("y", function(d,i) { return (i+1) * cellSize })
+		.style("text-anchor","end")
+		.attr("class", "graph-label");
+
+	var colLabels = svg.append("g")
+		.attr("transform", "translate(48,200)")
+		.attr("class", "colLabels")
+		.selectAll(".colLabel")
+		.data(crimeTypes)
+		.enter()
+		.append("text")
+		.text(function(d) { return d })
+		.attr("x", 0)
+		.attr("y", function(d,i) { return (i+1) * cellSize })
 		.attr("class", "graph-label")
 		.attr("transform", "rotate(-90)");
 
 	var vertGrid = svg.append("g")
-		.attr("transform", "translate(200,100)")
+		.attr("transform", "translate(50,200)")
 		.attr("class", "vert-grid")
 		.selectAll(".vert-grid")
-		.data(days)
+		.data(crimeTypes)
 		.enter()
 		.append("line")
 		.attr("x1", function(d,i) { return (i) * cellSize + 2 })
@@ -432,10 +432,10 @@ function drawGrid() {
 		.attr("stroke", "#eee");
 
 	var horzGrid = svg.append("g")
-		.attr("transform", "translate(200,100)")
+		.attr("transform", "translate(50,200)")
 		.attr("class", "horz-grid")
 		.selectAll(".horz-grid")
-		.data(crimeTypes)
+		.data(days)
 		.enter()
 		.append("line")
 		.attr("y1", function(d,i) { return (i) * cellSize + 2 })
@@ -450,14 +450,14 @@ function drawGrid() {
 
 	var heatMap = svg.append("g")
 		.attr("class", "cells")
-		.attr("transform", "translate(202,100)")
+		.attr("transform", "translate(50,202)")
 		.selectAll(".cell")
 		.data(cells)
 		.enter()
 		.append("rect")
 		.attr("class","cell")
-		.attr("x", function(d) { return (days.indexOf(d.date)) * cellSize } )
-		.attr("y", function(d,i) { return (crimeTypes.indexOf(d.crime)) * cellSize + 2 } )
+		.attr("y", function(d) { return (days.indexOf(d.date)) * cellSize } )
+		.attr("x", function(d,i) { return (crimeTypes.indexOf(d.crime)) * cellSize + 2 } )
 		.attr("height", cellSize)
 		.attr("width", cellSize)
 		.attr("stroke", "#eee")
@@ -465,10 +465,10 @@ function drawGrid() {
 		.on("mouseover", function(d) {
 			d3.select("#tooltip")
 				.style("left", (d3.event.pageX+10) + "px")
-                .style("top", (d3.event.pageY-10) + "px")
-                .select("#value")
-                .html("<p>Date: " + new Date(d.date).toDateString() + "</p><p>Crime: " + d.crime + "</p>Count: " + d.count + "</p>");
-            d3.select("#tooltip").classed("hidden", false);
+				.style("top", (d3.event.pageY-10) + "px")
+				.select("#value")
+				.html("<p>Date: " + new Date(d.date).toDateString() + "</p><p>Crime: " + d.crime + "</p>Count: " + d.count + "</p>");
+			d3.select("#tooltip").classed("hidden", false);
 		})
 		.on("mouseout", function() {
 			d3.select("#tooltip").classed("hidden", true);
