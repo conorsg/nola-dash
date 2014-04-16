@@ -298,6 +298,7 @@ function makeDateLine() {
     function tooltip(x) {
         //destroy old line
         d3.select(".guideline").remove();
+        d3.select(".bead").remove();
 
         //draw new line
         var guideline = d3.select("#date-chart-line svg")
@@ -318,6 +319,7 @@ function makeDateLine() {
                     .attr("class", "bead")
                     .attr("r", 6)
                     .attr("cx", x)
+                    .attr("cy", function(d) { return d.values[].value; });
 
         //wait half second to draw tooltip box
     }
