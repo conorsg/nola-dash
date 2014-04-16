@@ -381,11 +381,11 @@ function drawGrid() {
 
 	d3.select("#heat-grid h2").text("All crimes reported to NOPD, 2014:");
 
-	var cellSize 	=	12;
-	var rowNum 		= 	crimeTypes.length;
-	var colNum 		= 	days.length
-	var width 		= 	cellSize * rowNum + 66;
-	var height 		= 	cellSize * colNum + 200;
+	var cellSize = 10;
+	var rowNum = crimeTypes.length;
+	var colNum = days.length
+	var width = cellSize * rowNum + 66;
+	var height = cellSize * colNum + 200;
 
 	var svg = d3.select('#heat-grid').append("svg")
 		.attr("width", width)
