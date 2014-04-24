@@ -325,21 +325,21 @@ function makeDateLine() {
                         .style("stroke", "grey");
 
         //draw beads on lines
-        // var bead = d3.select("#date-chart-line svg")
-        //             .selectAll(".bead")
-        //             .data(lines)
-        //             .enter()
-        //             .append("circle")
-        //             .attr("class", "bead")
-        //             .attr("r", 6)
-        //             .attr("cx", xVal)
-        //             .attr("cy", function(d) {
-        //                 i = lookup(xVal);
-        //                 return y(lines[1].values[i].value);
-        //             });
+        var bead = d3.select("#date-chart-line svg")
+                    .selectAll(".bead")
+                    .data(lines)
+                    .enter()
+                    .append("circle")
+                    .attr("class", "bead")
+                    .attr("r", 6)
+                    .attr("cx", xVal)
+                    .attr("cy", function(d) {
+                        i = lookup(xVal);
+                        return y(lines[0].values[i].value - margin.top);
+                    });
 
         //draw data in info window
-        var date = d3.select("#date-chart-line .info-panel .date").text(function(d) { i = lookup(xVal); return lines[1].values[i].date; });
+        var date = d3.select("#date-chart-line .info-panel .date").text(function(d) { i = lookup(xVal); return lines[1].values[i].date.toDateString(); });
         var median = d3.select("#date-chart-line .info-panel .median").text(function(d) { i = lookup(xVal); return lines[0].values[i].value; });
         var topP = d3.select("#date-chart-line .info-panel .top-percentile").text(function(d) { i = lookup(xVal); return lines[1].values[i].value; });
 
