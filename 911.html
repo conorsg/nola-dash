@@ -23,13 +23,25 @@
 </header>
 
 <section class="container main" role="main">
-    <div id="date-chart"></div>
-    <div id="date-chart-line">
-        <div id="line-chart-tooltip-box" class="hidden">
-          <p><span id="value"></p>
+    <div id="date-chart" >
+        <h2 class="title"></h2>
+        <div class="info-panel">
+            <h3 class="date"><span class="outer"></span><span class="inner"></span></h3>
+            <h3 class="type"><span class="outer"></span><span class="inner"></span></h3>
+            <h3 class="time"><span class="outer"></span><span class="inner"></span></h3>
         </div>
     </div>
-    <div id="interval-chart"></div>
+    <div id="date-chart-line">
+        <h2 class="title"></h2>
+        <div class="info-panel">
+            <h3 class="date"></h3>
+            <h3 class="median"></h3>
+            <h3 class="top-percentile"></h3>
+        </div>
+    </div>
+    <div id="interval-chart">
+        <div class="info-panel"></div>
+    </div>
 </section>
 
 <footer>

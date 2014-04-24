@@ -61,6 +61,7 @@ function makeChartData() {
                 response: (r.timeresponse/1000), // convert milliseconds to seconds
                 int: r.timeint,
                 type: r.type_,
+                typetext: r.typetext,
                 cat: categorize(r.type_)
             });
         }
@@ -197,9 +198,14 @@ makeDateLine();
 
 function makeDateChart() {
 
-    var height = 600;
+    var height = 500;
     var width = 900;
     var margin = { top: 50, right: 20, bottom: 50, left: 80 };
+
+    d3.select("#date-chart").select(".title").text("911 Event Dispatch Explorer");
+    d3.select("#date-chart").select(".date .outer").text("Date: ");
+    d3.select("#date-chart").select(".type .outer").text("Event: ");
+    d3.select("#date-chart").select(".time .outer").text("Dispatch time: ");
 
     var svg = d3.select("#date-chart").append("svg")
                 .attr("width", width + margin.left + margin.right)
@@ -253,10 +259,18 @@ function makeDateChart() {
         .attr("class", function(d) { return d.cat })
         .attr("r", 3)
         .attr("cx", function(d) { return x(d.timecreate) })
-        .attr("cy", function(d) { return y(d.response) });
+        .attr("cy", function(d) { return y(d.response) })
+        .on("mouseover", function(d) {
+            d3.select("#date-chart").select(".date .inner").text(d.date);
+            d3.select("#date-chart").select(".type .inner").text(d.typetext);
+            d3.select("#date-chart").select(".time .inner").text(Math.floor(d.response / 60) + " minutes " + d.response % 60 + " seconds");
+        });
 }
 
 function makeDateLine() {
+
+    d3.select("#date-line-chart .title").text("Median and 95th percentile dispatch times");
+
     var height = 600;
     var width = 900;
     var margin = { top: 50, right: 20, bottom: 50, left: 80 };
@@ -295,7 +309,7 @@ function makeDateLine() {
 
     var color = d3.scale.category20();
 
-    function tooltip(x) {
+    function tooltip(xVal) {
         //destroy old line
         d3.select(".guideline").remove();
         d3.select(".bead").remove();
@@ -304,24 +318,41 @@ function makeDateLine() {
         var guideline = d3.select("#date-chart-line svg")
                         .append("line")
                         .attr("class", "guideline")
-                        .attr("x1", x)
-                        .attr("x2", x)
+                        .attr("x1", xVal)
+                        .attr("x2", xVal)
                         .attr("y1", height + margin.top)
                         .attr("y2", 0)
                         .style("stroke", "grey");
 
         //draw beads on lines
-        var bead = d3.select("#date-chart-line svg")
-                    .selectAll(".bead")
-                    .data(lines)
-                    .enter()
-                    .append("circle")
-                    .attr("class", "bead")
-                    .attr("r", 6)
-                    .attr("cx", x)
-                    .attr("cy", function(d) { return d.values[].value; });
+        // var bead = d3.select("#date-chart-line svg")
+        //             .selectAll(".bead")
+        //             .data(lines)
+        //             .enter()
+        //             .append("circle")
+        //             .attr("class", "bead")
+        //             .attr("r", 6)
+        //             .attr("cx", xVal)
+        //             .attr("cy", function(d) {
+        //                 i = lookup(xVal);
+        //                 return y(lines[1].values[i].value);
+        //             });
 
-        //wait half second to draw tooltip box
+        //draw data in info window
+        var date = d3.select("#date-chart-line .info-panel .date").text(function(d) { i = lookup(xVal); return lines[1].values[i].date; });
+        var median = d3.select("#date-chart-line .info-panel .median").text(function(d) { i = lookup(xVal); return lines[0].values[i].value; });
+        var topP = d3.select("#date-chart-line .info-panel .top-percentile").text(function(d) { i = lookup(xVal); return lines[1].values[i].value; });
+
+        function lookup(num) {
+            index = 0;
+            i = 0;
+            do {
+                index = x(lines[1].values[i].date);
+                i++;
+            } while (index < num)
+
+            return i;
+        }
     }
 
     svg.append("g")
@@ -352,4 +383,6 @@ function makeDateLine() {
                 .style("stroke", function(d) { return color(d.key); });
 
     svg.on("mousemove", function(d) { tooltip(d3.mouse(this)[0]); })
+
+    d3.select("#date-chart-line .info-panel .title").text("Median and 95th Percentile Dispatch Times");
 }

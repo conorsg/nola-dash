@@ -10,6 +10,7 @@
 
 .points circle {
     opacity: 0.6;
+    cursor: pointer;
 }
 
 .line {
