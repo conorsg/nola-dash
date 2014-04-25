@@ -273,7 +273,7 @@ function makeDateLine() {
 
     var height = 600;
     var width = 900;
-    var margin = { top: 50, right: 20, bottom: 50, left: 0 };
+    var margin = { top: 50, right: 20, bottom: 50, left: 80 };
 
     var svg = d3.select("#date-chart-line")
                 .append("svg")
@@ -315,7 +315,7 @@ function makeDateLine() {
         d3.select(".bead").remove();
 
         //draw new line
-        var guideline = d3.select("#date-chart-line svg")
+        var guideline = d3.select("#date-chart-line .wrap")
                         .append("line")
                         .attr("class", "guideline")
                         .attr("x1", xVal)
@@ -325,7 +325,7 @@ function makeDateLine() {
                         .style("stroke", "grey");
 
         //draw beads on lines
-        var bead = d3.select("#date-chart-line svg")
+        var bead = d3.select("#date-chart-line .wrap")
                     .selectAll(".bead")
                     .data(lines)
                     .enter()
@@ -371,18 +371,27 @@ function makeDateLine() {
         .attr("dy", "-" + (margin.left - 10) + "")
         .attr("dx", "-" + (height + margin.top + margin.bottom)/2 + "");
 
-    var qLines = svg.selectAll(".line")
+    var wrap = svg.append("g")
+                .attr("class", "wrap")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    wrap.append("rect")
+        .attr("height", height)
+        .attr("width", width)
+        .attr("opacity", 0);
+
+    var qLines = wrap.selectAll(".line")
                 .data(lines)
                 .enter()
                 .append("g")
-                .attr("transform", "translate(" + (margin.left + 3) + "," + (margin.top - 3) + ")")
+                .attr("transform", "translate(2,2)")
                 .attr("class", "line")
                 .append("path")
                 .attr("class", function(d) { return d.key; })
                 .attr("d", function(d) { return line(d.values); })
                 .style("stroke", function(d) { return color(d.key); });
 
-    svg.on("mousemove", function(d) { tooltip(d3.mouse(this)[0]); })
+    wrap.on("mousemove", function(d) { tooltip(d3.mouse(this)[0]); });
 
     d3.select("#date-chart-line .info-panel .title").text("Median and 95th Percentile Dispatch Times");
 }
