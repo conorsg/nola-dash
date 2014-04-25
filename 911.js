@@ -318,8 +318,8 @@ function makeDateLine() {
         var guideline = d3.select("#date-chart-line svg")
                         .append("line")
                         .attr("class", "guideline")
-                        .attr("x1", xVal)
-                        .attr("x2", xVal)
+                        .attr("x1", xVal + margin.left)
+                        .attr("x2", xVal + margin.left)
                         .attr("y1", height + margin.top)
                         .attr("y2", 0)
                         .style("stroke", "grey");
@@ -332,7 +332,7 @@ function makeDateLine() {
                     .append("circle")
                     .attr("class", "bead")
                     .attr("r", 6)
-                    .attr("cx", xVal)
+                    .attr("cx", xVal + margin.left)
                     .attr("cy", function(d) {
                         i = lookup(xVal);
                         return y(lines[0].values[i].value - margin.top);
