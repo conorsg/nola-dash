@@ -273,7 +273,7 @@ function makeDateLine() {
 
     var height = 600;
     var width = 900;
-    var margin = { top: 50, right: 20, bottom: 50, left: 80 };
+    var margin = { top: 50, right: 20, bottom: 50, left: 0 };
 
     var svg = d3.select("#date-chart-line")
                 .append("svg")
@@ -318,8 +318,8 @@ function makeDateLine() {
         var guideline = d3.select("#date-chart-line svg")
                         .append("line")
                         .attr("class", "guideline")
-                        .attr("x1", xVal + margin.left)
-                        .attr("x2", xVal + margin.left)
+                        .attr("x1", xVal)
+                        .attr("x2", xVal)
                         .attr("y1", height + margin.top)
                         .attr("y2", 0)
                         .style("stroke", "grey");
@@ -332,10 +332,10 @@ function makeDateLine() {
                     .append("circle")
                     .attr("class", "bead")
                     .attr("r", 6)
-                    .attr("cx", xVal + margin.left)
+                    .attr("cx", xVal)
                     .attr("cy", function(d) {
                         i = lookup(xVal);
-                        return y(lines[0].values[i].value - margin.top);
+                        return y(lines[0].values[i].value);
                     });
 
         //draw data in info window
@@ -351,7 +351,7 @@ function makeDateLine() {
                 i++;
             } while (index < num)
 
-            return i;
+            return i - 1;
         }
     }
 
