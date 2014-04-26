@@ -15,8 +15,11 @@
 
 .line {
     fill: none;
-    stroke: red;
     stroke-width: 3px;
+}
+
+.guideline {
+    pointer: cursor;
 }
 
 circle.property {

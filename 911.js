@@ -269,11 +269,14 @@ function makeDateChart() {
 
 function makeDateLine() {
 
-    d3.select("#date-line-chart .title").text("Median and 95th percentile dispatch times");
+    d3.select("#date-chart-line .title").text("Median and 95th percentile dispatch times");
+    d3.select("#date-chart-line .date .outer").text("Date: ");
+    d3.select("#date-chart-line .median .outer").text("Median: ");
+    d3.select("#date-chart-line .top-percentile .outer").text("95th Percentile: ");
 
     var height = 600;
     var width = 900;
-    var margin = { top: 50, right: 20, bottom: 50, left: 80 };
+    var margin = { top: 50, right: 80, bottom: 50, left: 80 };
 
     var svg = d3.select("#date-chart-line")
                 .append("svg")
@@ -325,24 +328,25 @@ function makeDateLine() {
                         .style("stroke", "grey");
 
         //draw beads on lines
-        var bead = d3.select("#date-chart-line .wrap")
-                    .selectAll(".bead")
-                    .data(lines)
-                    .enter()
-                    .append("circle")
-                    .attr("class", "bead")
-                    .attr("r", 6)
-                    .attr("cx", xVal)
-                    .attr("cy", function(d) {
-                        i = lookup(xVal);
-                        return y(lines[0].values[i].value);
-                    });
+        // var bead = d3.select("#date-chart-line .wrap")
+        //             .selectAll(".bead")
+        //             .data(lines)
+        //             .enter()
+        //             .append("circle")
+        //             .attr("class", "bead")
+        //             .attr("r", 6)
+        //             .attr("cx", xVal)
+        //             .attr("cy", function(d) {
+        //                 i = lookup(xVal);
+        //                 return y(lines[0].values[i].value);
+        //             });
 
         //draw data in info window
-        var date = d3.select("#date-chart-line .info-panel .date").text(function(d) { i = lookup(xVal); return lines[1].values[i].date.toDateString(); });
-        var median = d3.select("#date-chart-line .info-panel .median").text(function(d) { i = lookup(xVal); return lines[0].values[i].value; });
-        var topP = d3.select("#date-chart-line .info-panel .top-percentile").text(function(d) { i = lookup(xVal); return lines[1].values[i].value; });
+        var date = d3.select("#date-chart-line .info-panel .date .inner").text(function(d) { i = lookup(xVal); return lines[1].values[i].date.toDateString(); });
+        var median = d3.select("#date-chart-line .info-panel .median .inner").text(function(d) { i = lookup(xVal); return Math.floor((lines[0].values[i].value) / 60) + " minutes " + Math.floor(lines[0].values[i].value % 60) + " seconds"; });
+        var topP = d3.select("#date-chart-line .info-panel .top-percentile .inner").text(function(d) { i = lookup(xVal); return Math.floor((lines[1].values[i].value) / 60) + " minutes " + Math.floor(lines[1].values[i].value % 60) + " seconds"; });
 
+        //lookup data object by graph x value
         function lookup(num) {
             index = 0;
             i = 0;
@@ -350,7 +354,6 @@ function makeDateLine() {
                 index = x(lines[1].values[i].date);
                 i++;
             } while (index < num)
-
             return i - 1;
         }
     }
@@ -384,12 +387,23 @@ function makeDateLine() {
                 .data(lines)
                 .enter()
                 .append("g")
-                .attr("transform", "translate(2,2)")
                 .attr("class", "line")
                 .append("path")
                 .attr("class", function(d) { return d.key; })
                 .attr("d", function(d) { return line(d.values); })
                 .style("stroke", function(d) { return color(d.key); });
+
+    wrap.append("text")
+        .text("Median")
+        .attr("x", 3)
+        .attr("dy", ".35em")
+        .attr("transform", "translate(" + x(lines[0].values[lines[0].values.length - 1].date) + "," + y(lines[0].values[lines[0].values.length - 1].value) + ")");
+
+    wrap.append("text")
+        .text("95th percentile")
+        .attr("x", 3)
+        .attr("dy", ".35em")
+        .attr("transform", "translate(" + x(lines[1].values[lines[1].values.length - 1].date) + "," + y(lines[1].values[lines[1].values.length - 1].value) + ")");
 
     wrap.on("mousemove", function(d) { tooltip(d3.mouse(this)[0]); });
 
