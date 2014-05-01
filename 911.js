@@ -202,10 +202,78 @@ function makeDateChart() {
     var width = 900;
     var margin = { top: 50, right: 20, bottom: 50, left: 80 };
 
-    d3.select("#date-chart").select(".title").text("911 Event Dispatch Explorer");
+    d3.select("#date-chart").select(".title").text("NOPD Call for Service Explorer");
     d3.select("#date-chart").select(".date .outer").text("Date: ");
     d3.select("#date-chart").select(".type .outer").text("Event: ");
     d3.select("#date-chart").select(".time .outer").text("Dispatch time: ");
+
+    var legend = d3.select("#date-chart .legend").append("svg")
+                    .attr("height", "30");
+
+    legend.append("rect")
+        .attr("height", "20")
+        .attr("width", "20")
+        .attr("class", "property");
+
+    legend.append("rect")
+        .attr("height", "20")
+        .attr("width", "20")
+        .attr("x", "150")
+        .attr("class", "violent");
+
+    legend.append("rect")
+        .attr("height", "20")
+        .attr("width", "20")
+        .attr("x", "275")
+        .attr("class", "rape");
+
+    legend.append("rect")
+        .attr("height", "20")
+        .attr("width", "20")
+        .attr("x", "350")
+        .attr("class", "gun");
+
+    legend.append("rect")
+        .attr("height", "20")
+        .attr("width", "20")
+        .attr("x", "450")
+        .attr("class", "homicide");
+
+    legend.append("rect")
+        .attr("height", "20")
+        .attr("width", "20")
+        .attr("x", "550")
+        .attr("class", "other");
+
+    legend.append("text")
+        .attr("y", "15")
+        .attr("x", "25")
+        .text("Property Crimes");
+
+    legend.append("text")
+        .attr("y", "15")
+        .attr("x", "175")
+        .text("Violent Crimes");
+
+    legend.append("text")
+        .attr("y", "15")
+        .attr("x", "300")
+        .text("Rape");
+
+    legend.append("text")
+        .attr("y", "15")
+        .attr("x", "375")
+        .text("Gun Crimes");
+
+    legend.append("text")
+        .attr("y", "15")
+        .attr("x", "475")
+        .text("Homicide");
+
+    legend.append("text")
+        .attr("y", "15")
+        .attr("x", "575")
+        .text("Other");
 
     var svg = d3.select("#date-chart").append("svg")
                 .attr("width", width + margin.left + margin.right)
@@ -261,9 +329,15 @@ function makeDateChart() {
         .attr("cx", function(d) { return x(d.timecreate) })
         .attr("cy", function(d) { return y(d.response) })
         .on("mouseover", function(d) {
+            d3.select("#date-chart").select(".info-panel").classed("hidden", false)
+                .style("left", (d3.event.pageX+10) + "px")
+                .style("top", (d3.event.pageY-10) + "px");
             d3.select("#date-chart").select(".date .inner").text(d.date);
             d3.select("#date-chart").select(".type .inner").text(d.typetext);
             d3.select("#date-chart").select(".time .inner").text(Math.floor(d.response / 60) + " minutes " + d.response % 60 + " seconds");
+        })
+        .on("mouseout", function() {
+            d3.select("#date-chart .info-panel").classed("hidden", true);
         });
 }
 
@@ -321,9 +395,9 @@ function makeDateLine() {
         var guideline = d3.select("#date-chart-line .wrap")
                         .append("line")
                         .attr("class", "guideline")
-                        .attr("x1", xVal)
-                        .attr("x2", xVal)
-                        .attr("y1", height + margin.top)
+                        .attr("x1", xVal + 3)
+                        .attr("x2", xVal + 3)
+                        .attr("y1", height)
                         .attr("y2", 0)
                         .style("stroke", "grey");
 

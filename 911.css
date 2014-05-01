@@ -22,58 +22,71 @@
     pointer: cursor;
 }
 
-circle.property {
+circle.property, rect.property {
     stroke: #A68900;
     fill: #BFA730;
 }
 
-circle.violent {
+circle.violent, rect.violent {
     stroke: #48036F;
     fill: #5F2590;
 }
 
-circle.rape {
+circle.rape, rect.rape {
     stroke:#A62000;
     fill: #BF4B30;
 }
 
-circle.gun {
+circle.gun, rect.gun {
     stroke: #439400;
     fill: #64AA2B;
 }
 
-circle.homicide {
+circle.homicide, rect.homicide {
     stroke: #A60000;
     fill: #FF4040;
 }
 
-circle.other {
+circle.other, rect.other {
     stroke: #C1C1AF;
     fill: #DADAC8;
 }
 
-
-#line-tooltip {
-  position: absolute;
-  width: 200px;
-  height: auto;
-  padding: 10px;
-  background-color: white;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-  -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-  -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-  pointer-events: none;
+.container .title {
+    text-align: center;
+    margin-bottom: 25px;
 }
 
-#line-tooltip.hidden {
-  display: none;
+#date-chart .info-panel {
+    position: absolute;
+    width: 250px;
+    height: 150px;
+    padding: 10px;
+    background-color: white;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
 }
 
-#line-tooltip p {
-  margin: 0;
-  font-size: 12px;
-  line-height: 20px;
+#date-chart .info-panel h3 {
+    font-size: 14px;
+    font-family: 'Source Code Pro', monospace;
+}
+
+#date-chart .info-panel h3 .inner {
+    color: #b12b0f;
+}
+
+#date-chart .legend {
+    margin: 0 auto;
+    display: block;
+    width: 960px;
+}
+
+#date-chart .legend svg {
+    margin-left: 150px;
 }
