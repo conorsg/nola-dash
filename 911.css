@@ -23,33 +23,27 @@
 }
 
 circle.property, rect.property {
-    stroke: #A68900;
-    fill: #BFA730;
+    fill: #66c2a5;
 }
 
 circle.violent, rect.violent {
-    stroke: #48036F;
-    fill: #5F2590;
+    fill: #fc8d62;
 }
 
 circle.rape, rect.rape {
-    stroke:#A62000;
-    fill: #BF4B30;
+    fill: #8da0cb;
 }
 
 circle.gun, rect.gun {
-    stroke: #439400;
-    fill: #64AA2B;
+    fill: #e78ac3;
 }
 
 circle.homicide, rect.homicide {
-    stroke: #A60000;
-    fill: #FF4040;
+    fill: #a6d854;
 }
 
 circle.other, rect.other {
-    stroke: #C1C1AF;
-    fill: #DADAC8;
+    fill: #ffd92f;
 }
 
 .container .title {
