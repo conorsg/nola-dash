@@ -208,7 +208,8 @@ function makeDateChart() {
     d3.select("#date-chart").select(".time .outer").text("Dispatch time: ");
 
     var legend = d3.select("#date-chart .legend").append("svg")
-                    .attr("height", "30");
+                    .attr("height", "30")
+                    .attr("width", "700");
 
     legend.append("rect")
         .attr("height", "20")
