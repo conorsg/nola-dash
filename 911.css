@@ -27,15 +27,15 @@ circle.property, rect.property {
 }
 
 circle.violent, rect.violent {
-    fill: #fc8d62;
+    fill: #e78ac3;
 }
 
 circle.rape, rect.rape {
-    fill: #8da0cb;
+    fill: #fc8d62;
 }
 
 circle.gun, rect.gun {
-    fill: #e78ac3;
+    fill: #8da0cb;
 }
 
 circle.homicide, rect.homicide {
