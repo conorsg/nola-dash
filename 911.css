@@ -57,27 +57,22 @@ circle.other, rect.other {
     margin-bottom: 25px;
 }
 
-#date-chart .info-panel {
-    position: absolute;
-    width: 250px;
-    height: 150px;
+.info-panel {
+    width: 350px;
+    margin: 0 auto;
+    background-color: #EEE;
     padding: 10px;
-    background-color: white;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
-    -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-    -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-    pointer-events: none;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
 }
 
-#date-chart .info-panel h3 {
+.info-panel h3 {
     font-size: 14px;
     font-family: 'Source Code Pro', monospace;
 }
 
-#date-chart .info-panel h3 .inner {
+.info-panel h3 .inner {
     color: #b12b0f;
 }
 

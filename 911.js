@@ -329,15 +329,10 @@ function makeDateChart() {
         .attr("cx", function(d) { return x(d.timecreate) })
         .attr("cy", function(d) { return y(d.response) })
         .on("mouseover", function(d) {
-            d3.select("#date-chart").select(".info-panel").classed("hidden", false)
-                .style("left", (d3.event.pageX+10) + "px")
-                .style("top", (d3.event.pageY-10) + "px");
+            d3.select("#date-chart").select(".info-panel").classed("hidden", false);
             d3.select("#date-chart").select(".date .inner").text(d.date);
             d3.select("#date-chart").select(".type .inner").text(d.typetext);
             d3.select("#date-chart").select(".time .inner").text(Math.floor(d.response / 60) + " minutes " + d.response % 60 + " seconds");
-        })
-        .on("mouseout", function() {
-            d3.select("#date-chart .info-panel").classed("hidden", true);
         });
 }
 
@@ -479,7 +474,10 @@ function makeDateLine() {
         .attr("dy", ".35em")
         .attr("transform", "translate(" + x(lines[1].values[lines[1].values.length - 1].date) + "," + y(lines[1].values[lines[1].values.length - 1].value) + ")");
 
-    wrap.on("mousemove", function(d) { tooltip(d3.mouse(this)[0]); });
+    wrap.on("mousemove", function(d) {
+        d3.select("#date-chart-line .info-panel").classed("hidden", false);
+        tooltip(d3.mouse(this)[0]);
+    });
 
     d3.select("#date-chart-line .info-panel .title").text("Median and 95th Percentile Dispatch Times");
 }
