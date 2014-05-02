@@ -1,3 +1,7 @@
+.main {
+    min-height: 800px;
+}
+
 .axis path, .axis line {
     fill: none;
     stroke: #4A4A4A;

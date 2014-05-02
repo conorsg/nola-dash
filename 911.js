@@ -1,5 +1,6 @@
-// Distribution of 911 call response times
+// Distribution of 911 call dispatch times
 
+var log = d3.select(".log p");
 var months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
 var url = "https://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF&$select=timecreate,typetext,type_,timedispatch,timeclosed";
 var property = ["67P", "55", "67F", "67A", "67", "56", "62", "67S", "62C", "62R", "67B", "56D", "62B", "65", "67E", "67C", "65P", "60", "65J"];
@@ -17,6 +18,9 @@ var freqTime = [];
 init();
 
 function init() {
+
+    log.text(" > Fetching data...")
+
     d3.json(url, function(error,json) {
         data = json;
         i = 1;
@@ -26,6 +30,7 @@ function init() {
                 d3.json(url + '&$offset=' + (i*1000), function(error,json) {
                     data = data.concat(json);
                     i++;
+                    d3.select(".log .object-count").text( data.length + " objects retrieved");
                     pageData(json);
                 });
             } else {
@@ -36,6 +41,8 @@ function init() {
 }
 
 function timify(data) {
+    log.text(" > Calculating times...")
+
     data.forEach(function(d) {
         if(d.timedispatch) {
             d.timecreate = new Date(d.timecreate);
@@ -52,6 +59,8 @@ function timify(data) {
 }
 
 function makeChartData() {
+    log.text(" > Transforming data...")
+
     responses.forEach(function(r) {
         //data points for response time frequencies by date, excluding points that have a 0 ms response time
         if(r.timeresponse > 0) {
@@ -197,6 +206,8 @@ makeDateLine();
 
 
 function makeDateChart() {
+
+    log.text(" > Making charts...")
 
     var height = 500;
     var width = 900;
@@ -481,4 +492,6 @@ function makeDateLine() {
     });
 
     d3.select("#date-chart-line .info-panel .title").text("Median and 95th Percentile Dispatch Times");
+
+    log.text(" > Charts complete")
 }
