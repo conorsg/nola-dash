@@ -59,7 +59,6 @@ function timify(data) {
 }
 
 function makeChartData() {
-    log.text(" > Transforming data...")
 
     responses.forEach(function(r) {
         //data points for response time frequencies by date, excluding points that have a 0 ms response time
@@ -112,13 +111,14 @@ function makeChartData() {
         counts = count(n.values);
 
         freqTime.push({
-            int: n.key,
+            int: parseFloat(n.key),
             property: counts.property,
             violent: counts.violent,
             rape: counts.rape,
             homicide: counts.homicide,
             gun: counts.gun,
-            other: counts.other
+            other: counts.other,
+            total: n.values.length
         });
     });
 
@@ -155,7 +155,8 @@ function makeChartData() {
             rape: 0,
             homicide: 0,
             gun: 0,
-            other: 0
+            other: 0,
+            total: 0
         };
         array.forEach(function(a) {
             property.forEach(function(t) {
@@ -199,15 +200,16 @@ function makeChartData() {
     }
 
 clean(freqTime);
+log.text(" > Transforming data...");
 clean(freqDate);
 makeDateChart();
+log.text(" > Making charts...");
 makeDateLine();
+log.text(" > Charts complete");
 }
 
 
 function makeDateChart() {
-
-    log.text(" > Making charts...")
 
     var height = 500;
     var width = 900;
@@ -408,20 +410,6 @@ function makeDateLine() {
                         .attr("y2", 0)
                         .style("stroke", "grey");
 
-        //draw beads on lines
-        // var bead = d3.select("#date-chart-line .wrap")
-        //             .selectAll(".bead")
-        //             .data(lines)
-        //             .enter()
-        //             .append("circle")
-        //             .attr("class", "bead")
-        //             .attr("r", 6)
-        //             .attr("cx", xVal)
-        //             .attr("cy", function(d) {
-        //                 i = lookup(xVal);
-        //                 return y(lines[0].values[i].value);
-        //             });
-
         //draw data in info window
         var date = d3.select("#date-chart-line .info-panel .date .inner").text(function(d) { i = lookup(xVal); return lines[1].values[i].date.toDateString(); });
         var median = d3.select("#date-chart-line .info-panel .median .inner").text(function(d) { i = lookup(xVal); return Math.floor((lines[0].values[i].value) / 60) + " minutes " + Math.floor(lines[0].values[i].value % 60) + " seconds"; });
@@ -492,6 +480,45 @@ function makeDateLine() {
     });
 
     d3.select("#date-chart-line .info-panel .title").text("Median and 95th Percentile Dispatch Times");
+}
 
-    log.text(" > Charts complete")
+function makeBarChart() {
+    var height = 600;
+    var width = 900;
+    var margin = { top: 50, right: 80, bottom: 50, left: 80 };
+
+    var svg = d3.select("#interval-chart")
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .data(freqTime);
+
+    var x = d3.scale.linear()
+            .domain([d3.min(freqTime, function(d) { return d.int }), d3.max(freqTime, function(d) { return d.int })])
+            .nice(5)
+            .rangeRound([0, width]);
+
+    var y = d3.scale.linear()
+            .domain([d3.min(freqTime, function(d) { return d.total }), d3.max(freqTime, function(d) { return d.total })])
+            .rangeRound([height, 0]);
+
+    var xAxis = d3.svg.axis()
+                .scale(x)
+                .orient("bottom");
+
+    var yAxis = d3.svg.axis()
+                .scale(y)
+                .orient("left");
+
+    var stack = d3.layout.stack()
+
+    svg.append("g")
+        .attr("transform", "translate(" + margin.left + "," + (height + margin.top) + ")")
+        .call(xAxis)
+        .attr("class", "x axis");
+
+    svg.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        .call(yAxis)
+        .attr("class", "y axis");
 }
