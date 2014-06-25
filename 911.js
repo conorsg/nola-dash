@@ -2,7 +2,7 @@
 
 var log = d3.select(".log p");
 var months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
-var url = "http://s3.amazonaws.com/s3.conorgaffney.com/data/2014.json";
+var url = "http://data.nola.gov/resource/jsyu-nz5r.json?disposition=RTF";
 var property = ["67P", "55", "67F", "67A", "67", "56", "62", "67S", "62C", "62R", "67B", "56D", "62B", "65", "67E", "67C", "65P", "65J"];
 var violent = ["35D", "35", "34", "34S", "37", "34D", "34C", "37D", "60", "38D"];
 var homicide = ["30", "30S", "30C", "30D"];
