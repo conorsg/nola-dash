@@ -253,11 +253,11 @@ function makeDateChart() {
         .attr("x", "450")
         .attr("class", "homicide");
 
-    legend.append("rect")
-        .attr("height", "20")
-        .attr("width", "20")
-        .attr("x", "550")
-        .attr("class", "other");
+    // legend.append("rect")
+    //     .attr("height", "20")
+    //     .attr("width", "20")
+    //     .attr("x", "550")
+    //     .attr("class", "other");
 
     legend.append("text")
         .attr("y", "15")
@@ -284,10 +284,10 @@ function makeDateChart() {
         .attr("x", "475")
         .text("Homicide");
 
-    legend.append("text")
-        .attr("y", "15")
-        .attr("x", "575")
-        .text("Other");
+    // legend.append("text")
+    //     .attr("y", "15")
+    //     .attr("x", "575")
+    //     .text("Other");
 
     var svg = d3.select("#date-chart").append("svg")
                 .attr("width", width + margin.left + margin.right)
@@ -335,7 +335,7 @@ function makeDateChart() {
         .attr("class", "points")
         .attr("transform", "translate(" + (margin.left + 3) + "," + (margin.top - 3) + ")")
         .selectAll(".point")
-        .data(freqDate)
+        .data(freqDate, function(d, i) { if(d.cat !== "other") { return i} })
         .enter()
         .append("circle")
         .attr("class", function(d) { return d.cat })
