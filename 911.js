@@ -335,7 +335,7 @@ function makeDateChart() {
         .attr("class", "points")
         .attr("transform", "translate(" + (margin.left + 3) + "," + (margin.top - 3) + ")")
         .selectAll(".point")
-        .data(freqDate, function(d, i) { if(d.cat !== "other") { return i} })
+        .data(freqDate, function(d, i) { if(d.cat !== "other") { return i } })
         .enter()
         .append("circle")
         .attr("class", function(d) { return d.cat })
