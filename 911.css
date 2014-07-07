@@ -56,6 +56,7 @@ circle.other, rect.other {
 }
 
 .info-panel {
+    position: absolute;
     width: 350px;
     margin: 0 auto;
     background-color: #EEE;
@@ -63,6 +64,7 @@ circle.other, rect.other {
     -moz-border-radius: 2px;
     -webkit-border-radius: 2px;
     border-radius: 2px;
+    border: 1px solid #DDD;
 }
 
 .info-panel h3 {
