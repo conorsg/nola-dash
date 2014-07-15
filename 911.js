@@ -450,7 +450,7 @@ function makeDateLine() {
 
     var wrap = svg.append("g")
                 .attr("class", "wrap")
-                .attr("transform", "translate(" + margin.left - 10 + "," + margin.top + ")");
+                .attr("transform", "translate(" + (margin.left - 10) + "," + margin.top + ")");
 
     wrap.append("rect")
         .attr("height", height)
