@@ -47,7 +47,7 @@ function timify(data) {
         if(d.timedispatch) {
             d.timecreate = new Date(d.timecreate);
             d.timedispatch = new Date(d.timedispatch);
-            d.timeclosed = new Date(d.timeclosed);
+            d.timedispatch = new Date(d.timedispatch);
 
             d.timeresponse = (d.timedispatch - d.timecreate);
             d.timeint = 0.5 * Math.round( (d.timeresponse/60000)/0.5 ); // rounded to the nearest half minute
@@ -450,7 +450,7 @@ function makeDateLine() {
 
     var wrap = svg.append("g")
                 .attr("class", "wrap")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                .attr("transform", "translate(" + margin.left - 10 + "," + margin.top + ")");
 
     wrap.append("rect")
         .attr("height", height)
